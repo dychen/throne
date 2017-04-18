@@ -23,9 +23,10 @@ const config = {
   },
   plugins: [
     new ExtractTextPlugin('app.css'),
+    // TODO: Change this on deploy
     new webpack.DefinePlugin({
-        ENVIRONMENT: JSON.stringify('development'),
-        SERVER_URL: JSON.stringify('http://127.0.0.1:8000'),
+      ENVIRONMENT: JSON.stringify('development'),
+      SERVER_URL: JSON.stringify('http://127.0.0.1:3334'),
     }),
     HtmlWebpackPluginConfig
   ],

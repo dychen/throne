@@ -10,11 +10,18 @@
   "author": "Daniel Chen",
   "license": "MIT",
   "dependencies": {
+    "authy": "^1.2.0",
+    "body-parser": "^1.17.1",
     "boostrap": "^1.0.0",
+    "express": "^4.15.2",
+    "express-force-ssl": "^0.3.2",
+    "immutable": "^3.8.1",
+    "mongoose": "^4.9.5",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "react-router": "^4.1.1",
-    "react-router-dom": "^4.1.1"
+    "react-router-dom": "^4.1.1",
+    "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",

@@ -7,21 +7,6 @@ import './index.scss';
 import {WebsitePage, WebsiteHome, WebsiteLogin,
         WebsiteRegister, WebsiteAbout} from './website.jsx';
 
-/*
-class AppContainer extends React.Component {
-  render() {
-    const {main, header} = this.props;
-
-    return (
-      <div className="thrn-app-container">
-        {header}
-        {main}
-      </div>
-    );
-  }
-}
-*/
-
 class App extends React.Component {
   render() {
     return (

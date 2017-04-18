@@ -95,13 +95,22 @@ $BG_IMAGE_URL: 'https://s3-us-west-1.amazonaws.com/throne-s3/images/background.p
   }
 
   /* About page */
+  .thrn-website-text-group.element-aligned {
+    width: $ELEMENT_WIDTH
+  }
   .thrn-website-text-group {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+    text-align: center;
 
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
+
+    .text-group-clickable {
+      color: $THRN_WHITE_GRAY;
+      @include hvr-color($THRN_WHITE);
+    }
 
     .text-group-bold {
       font-weight: 900;
