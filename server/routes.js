@@ -1,8 +1,9 @@
-const User = require(__ROOT_DIR + '/server/models/user.js');
+const path = require('path');
+const User = require(__ROOT_DIR + '/server/models/User.js');
 
 module.exports = (app, express) => {
   app.post('/auth/v1/register', (req, res) => {
-    User.createUser(req.body, (err, user) => {
+    User.registerUser(req.body, (err, user) => {
       if (err)
         return res.status(400).send({ error: err });
       else
@@ -34,10 +35,37 @@ module.exports = (app, express) => {
     res.send(data);
   });
 
+  app.get('/api/v1/users', (req, res) => {
+    User.getUserList((err, users) => {
+      if (err)
+        return res.status(400).send({ error: err });
+      else
+        return res.send({ data: users });
+    });
+  });
+
+  app.post('/api/v1/users', (req, res) => {
+    User.createUser(req.body, (err, users) => {
+      if (err)
+        return res.status(400).send({ error: err });
+      else
+        return res.send({ data: users });
+    });
+  });
+
+  app.post('/api/v1/users/:userId', (req, res) => {
+    User.updateUser(req.body, req.params.userId, (err, users) => {
+      if (err)
+        return res.status(400).send({ error: err });
+      else
+        return res.send({ data: users });
+    });
+  });
+
   // Serve static assets
-  app.use(express.static(__ROOT_DIR + '/client/dist'));
+  app.use(express.static(path.join(__ROOT_DIR, '/client/dist')));
   // Otherwise, serve index.html
   app.get('*', (req, res) => {
-    res.sendFile(__ROOT_DIR + '/client/dist/index.html');
+    res.sendFile(path.join(__ROOT_DIR, '/client/dist/index.html'));
   });
 }

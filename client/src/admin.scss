@@ -1,0 +1,198 @@
+@import './constants.scss';
+@import './mixins.scss';
+
+$LOGO_HEIGHT: 50px;
+$SIDENAV_WIDTH: 200px;
+$SIDENAV_MINI_WIDTH: 55px;
+$TABLE_ROW_HEIGHT: 40px;
+
+.thrn-admin-container {
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+
+  display: flex;
+  overflow-y: hidden;
+
+  > .thrn-sidenav {
+  }
+  > .thrn-admin-main {
+    width: 100%;
+    padding: 20px;
+    height: 100%;
+    overflow-y: scroll;
+  }
+}
+
+/* Sidenav */
+
+.thrn-sidenav {
+  height: 100%;
+  flex: 0 0 $SIDENAV_WIDTH; // Don't grow or shrink, set to $SIDENAV_WIDTH
+  z-index: 21;
+  color: $THRN_WHITE_GRAY;
+  background: $THRN_DARK_BLUE;
+  font-size: 1.2em;
+  box-shadow: 1px 1px 3px 0 $THRN_WHITE_GRAY;
+
+  a {
+    // Remove link formatting (underline and color)
+    text-decoration: none;
+    color: inherit;
+  }
+  a.active {
+    color: $THRN_DARK_BLUE;
+    background-color: $THRN_WHITE;
+  }
+
+  .thrn-sidenav-item {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+  }
+
+  .thrn-sidenav-item.logo {
+    height: $LOGO_HEIGHT;
+    padding-left: 0px;
+    margin-bottom: 10px;
+    font-weight: 600;
+
+    justify-content: center;
+    border-bottom: 1px solid $THRN_WHITE_GRAY;
+
+    // Minimize sidenav
+    @include hvr-color($THRN_WHITE);
+
+    position: relative;
+    i.nav-hamburger {
+      position: absolute;
+      left: 20px;
+      font-size: 25px;
+    }
+  }
+
+  .thrn-sidenav-item.link {
+    height: $LOGO_HEIGHT - 5px;
+    justify-content: flex-start;
+
+    @include hvr-color($THRN_WHITE);
+
+    i {
+      margin-left: 20px;
+      font-size: 20px;
+      margin-right: 15px;
+      width: 20px;
+    }
+  }
+}
+
+// Default
+.thrn-sidenav {
+  flex: 0 0 $SIDENAV_WIDTH;
+  .minimized-sidenav-hidden {
+    display: flex; // Inherit the flex row properties
+  }
+}
+// Hidden
+.thrn-sidenav.minimized {
+  flex: 0 0 $SIDENAV_MINI_WIDTH;
+  .minimized-sidenav-hidden {
+    display: none;
+  }
+}
+
+/* Create button */
+
+.thrn-create-button {
+  margin-bottom: 10px;
+  @include thrn-button(200px, 40px, $THRN_DARK_GRAY, $THRN_WHITE);
+}
+
+/* Table */
+
+.thrn-edit-table-container {
+  width: 100%;
+  overflow-x: scroll;
+}
+
+table.thrn-table {
+  width: 100%;
+  font-size: 0.9em;
+  thead {
+    background-color: $THRN_OFF_WHITE;
+    cursor: default;
+    th {
+      width: 100px;
+      height: $TABLE_ROW_HEIGHT;
+      padding: 5px;
+      text-align: center;
+      position: relative;
+
+      @include hvr-color($THRN_WHITE_GRAY);
+
+      i.sort-icon {
+        font-size: 20px;
+        float: right;
+        padding-right: 5px;
+        display: none;
+      }
+      i.sort-icon.visible {
+        display: inline-grid;
+      }
+    }
+  }
+  tbody {
+    tr {
+      width: 100%;
+      td {
+        width: 100px;
+        height: $TABLE_ROW_HEIGHT;
+        padding: 10px;
+        text-align: left;
+      }
+    }
+  }
+  tbody.reactable-data tr {
+    @include hvr-fade-table($THRN_DARK_GRAY, $THRN_OFF_WHITE);
+  }
+}
+
+table.thrn-table {
+  th, td {
+    border: 1px solid $THRN_LIGHT_GRAY;
+  }
+}
+
+// Table pagination (footer)
+table.thrn-table {
+  tbody.reactable-pagination {
+    td {
+      text-align: center;
+      a {
+        margin: 10px;
+        @include hvr-color($THRN_WHITE_GRAY);
+      }
+    }
+  }
+}
+
+// Table input filtering (header)
+
+tr.reactable-filterer {
+  background-color: white;
+  height: $TABLE_ROW_HEIGHT;
+
+  input.reactable-filter-input {
+    width: 200px; // Subtract padding
+    background: none;
+    padding: 5px;
+    margin: 5px;
+    border: 1px $THRN_WHITE_GRAY solid;
+    border-radius: 5px;
+  }
+  input.reactable-filter-input:focus {
+    outline: none;
+  }
+}

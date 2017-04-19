@@ -19,6 +19,8 @@ const config = {
   entry: SRC_DIR + '/index.jsx',
   output: {
     path: OUT_DIR,
+    publicPath: '/', // Need to define this in case the URL resolves to nested
+                     // assets
     filename: 'app.js'
   },
   plugins: [

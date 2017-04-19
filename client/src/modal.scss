@@ -1,0 +1,132 @@
+@import './constants.scss';
+@import './mixins.scss';
+
+/* The Modal (background) */
+.thrn-modal-background {
+  display: none;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index: 100;
+  overflow: hidden;
+  background-color: rgba(0,0,0,0.4);
+}
+
+/* Modal Content/Box */
+.thrn-modal {
+  width: 60%;
+  max-height: 80%;
+  margin: 5% auto;
+  color: $THRN_DARK_GRAY;
+
+  background-color: $THRN_WHITE;
+  border: 1px solid $THRN_WHITE_GRAY;
+}
+
+.thrn-modal-background.show {
+  display: block;
+}
+
+/* Modal component styles */
+
+.thrn-modal {
+  display: flex;
+  flex-direction: column;
+
+  .thrn-modal-header {
+    flex: 0 0 60px;
+    width: 100%;
+    border-bottom: 1px solid $THRN_LIGHT_GRAY;
+  }
+
+  .thrn-modal-body {
+    height: 100%;
+    width: 100%;
+  }
+
+  .thrn-modal-footer {
+    flex: 0 0 80px;
+    width: 100%;
+    border-top: 1px solid $THRN_LIGHT_GRAY;
+  }
+}
+
+.thrn-modal-header {
+  font-size: 1.2em;
+  font-weight: 900;
+  background-color: $THRN_WHITE_GRAY;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.thrn-modal-body {
+  display: flex;
+  flex-direction: row;
+
+  .modal-body-section {
+    padding: 10px;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: left;
+    justify-content: center;
+    overflow-y: auto;
+
+    .modal-input-field {
+      padding: 5px;
+
+      > .modal-input-title {
+        color: $THRN_GRAY;
+        font-size: 0.8em;
+        font-weight: 900;
+      }
+      > input {
+        border: 1px solid $THRN_GRAY;
+        border-radius: 5px;
+        padding: 5px;
+        font-size: 0.9em;
+      }
+    }
+  }
+}
+
+// Same as in modals/create.scss
+.thrn-modal-footer {
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  .modal-footer-button {
+    position: absolute;
+    width: 170px;
+    height: 20px;
+    padding: 10px;
+    border: 1px solid $THRN_DARK_GRAY;
+    border-radius: 5px;
+
+    @include hvr-fade($THRN_LIGHT_GRAY, $THRN_DARK_GRAY);
+
+    //position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    i {
+      position: absolute;
+      left: 10px;
+      font-size: 20px;
+    }
+  }
+  .modal-footer-button.left {
+    left: 10px;
+  }
+  .modal-footer-button.right {
+    right: 10px;
+  }
+}
+
