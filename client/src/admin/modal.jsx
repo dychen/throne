@@ -103,7 +103,11 @@ class UserField extends React.Component {
   }
   renderSuggestion(user) {
     return (
-      <div>{user.firstName} {user.lastName} ({user.email}) ({user.phone})</div>
+      <div className="suggestion-container">
+        <img src={user.photoUrl} />
+        <div className="suggestion-text">{user.firstName} {user.lastName}</div>
+        <div className="suggestion-subtext">{user.email} {user.phone}</div>
+      </div>
     );
   }
   onInputChange(e, {newValue}) {

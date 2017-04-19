@@ -20,6 +20,9 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
+  photoUrl: {
+    type: String
+  },
   countryCode: {
     type: String,
     default: '1'
@@ -106,7 +109,7 @@ userSchema.statics.verifyUser = function(userId, code, callback) {
 userSchema.statics.getUserList = (callback) => {
   User.find(
     {},
-    'firstName lastName email phone referrer createdAt verified active',
+    'photoUrl firstName lastName email phone referrer createdAt verified active',
     (err, users) => {
     if (err) {
       console.error(err);
@@ -120,7 +123,7 @@ userSchema.statics.getUserList = (callback) => {
 userSchema.statics.getUserAutocompleteList = (callback) => {
   User.find(
     { verified: true },
-    'firstName lastName email phone',
+    'photoUrl firstName lastName email phone',
     (err, users) => {
     if (err) {
       console.error(err);
@@ -136,6 +139,7 @@ userSchema.statics.createUser = (data, callback) => {
     lastName: data.lastName,
     email: data.email,
     phone: data.phone,
+    photoUrl: data.photoUrl,
     countryCode: '1', // Default to US
     verified: true,
     active: true,
@@ -160,7 +164,7 @@ userSchema.statics.updateUser = (data, userId, callback) => {
     lastName: data.lastName,
     email: data.email,
     phone: data.phone,
-    creditCard: data.creditCard,
+    photoUrl: data.photoUrl,
     referrer: data.referrer
   }, {
     upsert: true,

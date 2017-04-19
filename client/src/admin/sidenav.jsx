@@ -1,6 +1,8 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 
+import './sidenav.scss';
+
 class AdminSidenav extends React.Component {
   constructor(props) {
     super(props);
@@ -41,6 +43,14 @@ class AdminSidenav extends React.Component {
               <i className="ion-clock" />
               <span className="minimized-sidenav-hidden">
                 Sessions
+              </span>
+            </div>
+          </Link>
+          <Link to="/admin/tables">
+            <div className="thrn-sidenav-item link">
+              <i className="ion-earth" />
+              <span className="minimized-sidenav-hidden">
+                Tables
               </span>
             </div>
           </Link>

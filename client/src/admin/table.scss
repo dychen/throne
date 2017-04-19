@@ -1,0 +1,97 @@
+@import './../constants.scss';
+@import './../mixins.scss';
+
+$TABLE_ROW_HEIGHT: 40px;
+
+.thrn-edit-table-container {
+  width: 100%;
+  overflow-x: scroll;
+}
+
+table.thrn-table {
+  width: 100%;
+  margin-bottom: 50px; // Extra padding
+  font-size: 0.8em;
+  thead {
+    background-color: $THRN_OFF_WHITE;
+    cursor: default;
+    th {
+      width: 100px;
+      height: $TABLE_ROW_HEIGHT;
+      padding: 5px;
+      text-align: center;
+      position: relative;
+
+      @include hvr-color($THRN_WHITE_GRAY);
+
+      i.sort-icon {
+        font-size: 20px;
+        float: right;
+        padding-right: 5px;
+        display: none;
+      }
+      i.sort-icon.visible {
+        display: inline-grid;
+      }
+    }
+    th.photoUrl {
+      width: 40px;
+    }
+  }
+  tbody {
+    tr {
+      width: 100%;
+      td {
+        padding: 10px;
+        text-align: left;
+
+        img {
+          width: 40px;
+          height: 40px;
+          border-radius: 40px;
+        }
+      }
+    }
+  }
+  tbody.reactable-data tr {
+    @include hvr-fade-table($THRN_DARK_GRAY, $THRN_OFF_WHITE);
+  }
+}
+
+table.thrn-table {
+  th, td {
+    border: 1px solid $THRN_LIGHT_GRAY;
+  }
+}
+
+// Table pagination (footer)
+table.thrn-table {
+  tbody.reactable-pagination {
+    td {
+      text-align: center;
+      a {
+        margin: 10px;
+        @include hvr-color($THRN_WHITE_GRAY);
+      }
+    }
+  }
+}
+
+// Table input filtering (header)
+
+tr.reactable-filterer {
+  background-color: white;
+  height: $TABLE_ROW_HEIGHT;
+
+  input.reactable-filter-input {
+    width: 200px; // Subtract padding
+    background: none;
+    padding: 5px;
+    margin: 5px;
+    border: 1px $THRN_LIGHT_GRAY solid;
+    border-radius: 5px;
+  }
+  input.reactable-filter-input:focus {
+    outline: none;
+  }
+}

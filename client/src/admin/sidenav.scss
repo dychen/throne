@@ -1,0 +1,82 @@
+@import './../constants.scss';
+@import './../mixins.scss';
+
+$LOGO_HEIGHT: 50px;
+$SIDENAV_WIDTH: 200px;
+$SIDENAV_MINI_WIDTH: 55px;
+
+.thrn-sidenav {
+  height: 100%;
+  flex: 0 0 $SIDENAV_WIDTH; // Don't grow or shrink, set to $SIDENAV_WIDTH
+  z-index: 21;
+  color: $THRN_WHITE_GRAY;
+  background: $THRN_DARK_BLUE;
+  font-size: 1.2em;
+  box-shadow: 1px 1px 3px 0 $THRN_WHITE_GRAY;
+
+  a {
+    // Remove link formatting (underline and color)
+    text-decoration: none;
+    color: inherit;
+  }
+  a.active {
+    color: $THRN_DARK_BLUE;
+    background-color: $THRN_WHITE;
+  }
+
+  .thrn-sidenav-item {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+  }
+
+  .thrn-sidenav-item.logo {
+    height: $LOGO_HEIGHT;
+    padding-left: 0px;
+    margin-bottom: 10px;
+    font-weight: 600;
+
+    justify-content: center;
+    border-bottom: 1px solid $THRN_BLUE;
+
+    // Minimize sidenav
+    @include hvr-color($THRN_WHITE);
+
+    position: relative;
+    i.nav-hamburger {
+      position: absolute;
+      left: 20px;
+      font-size: 25px;
+    }
+  }
+
+  .thrn-sidenav-item.link {
+    height: $LOGO_HEIGHT - 5px;
+    justify-content: flex-start;
+
+    @include hvr-color($THRN_WHITE);
+
+    i {
+      margin-left: 20px;
+      font-size: 20px;
+      margin-right: 15px;
+      width: 20px;
+    }
+  }
+}
+
+// Default
+.thrn-sidenav {
+  flex: 0 0 $SIDENAV_WIDTH;
+  .minimized-sidenav-hidden {
+    display: flex; // Inherit the flex row properties
+  }
+}
+// Hidden
+.thrn-sidenav.minimized {
+  flex: 0 0 $SIDENAV_MINI_WIDTH;
+  .minimized-sidenav-hidden {
+    display: none;
+  }
+}

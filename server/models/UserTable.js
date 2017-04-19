@@ -1,10 +1,13 @@
 const mongoose = require('mongoose');
 
 // One-to-Many reference: http://mongoosejs.com/docs/populate.html
-const userSessionSchema = new mongoose.Schema({
+const userTableSchema = new mongoose.Schema({
   _user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
+  },
+  table: {
+    type: String
   },
   startTime: {
     type: Date
@@ -22,10 +25,11 @@ const userSessionSchema = new mongoose.Schema({
     default: new Date()
   }
 }, {
-  collection: 'user_sessions'
+  collection: 'user_tables'
 });
 
-const UserSession = mongoose.model('UserSession', userSessionSchema);
+const UserTable = mongoose.model('UserTable', userTableSchema);
 
-module.exports = UserSession;
+module.exports = UserTable;
+
 

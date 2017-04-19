@@ -32,7 +32,7 @@ const userPaymentSchema = new mongoose.Schema({
 
 userPaymentSchema.statics.getUserPaymentList = (callback) => {
   UserPayment.find({}, '_user date type amount paid')
-    .populate('_user', 'firstName lastName')
+    .populate('_user', 'photoUrl firstName lastName')
     .exec((err, userPayments) => {
       if (err) {
         console.error(err);
@@ -43,6 +43,7 @@ userPaymentSchema.statics.getUserPaymentList = (callback) => {
         return {
           _id: userPayment._id,
           _user: userPayment._user ? userPayment._user._id : undefined,
+          photoUrl: userPayment._user ? userPayment._user.photoUrl : undefined,
           firstName: userPayment._user ? userPayment._user.firstName : undefined,
           lastName: userPayment._user ? userPayment._user.lastName : undefined,
           date: userPayment.date,

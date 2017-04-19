@@ -8,6 +8,7 @@ import {WebsiteHome, WebsiteLogin, WebsiteRegister,
         WebsiteAbout} from './website.jsx';
 import {AdminUsers} from './admin/users.jsx';
 import {AdminSessions} from './admin/sessions.jsx';
+import {AdminTables} from './admin/tables.jsx';
 import {AdminPayments} from './admin/payments.jsx';
 
 class App extends React.Component {
@@ -23,6 +24,7 @@ class App extends React.Component {
           <Route exact path="/admin" component={AdminUsers} />
           <Route path="/admin/users" component={AdminUsers} />
           <Route path="/admin/sessions" component={AdminSessions} />
+          <Route path="/admin/tables" component={AdminTables} />
           <Route path="/admin/payments" component={AdminPayments} />
         </div>
       </BrowserRouter>

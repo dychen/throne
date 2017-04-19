@@ -4,6 +4,7 @@ import moment from 'moment';
 import 'whatwg-fetch';
 
 import {AdminPage} from './admin.jsx';
+import {AdminTable} from './table.jsx';
 import {AdminModal} from './modal.jsx';
 
 class AdminPayments extends React.Component {
@@ -13,6 +14,7 @@ class AdminPayments extends React.Component {
     this.API_URL = `${SERVER_URL}/api/v1/payments`
     this.COLUMNS = [
       { key: '_user', label: 'User Id' },
+      { key: 'photoUrl', label: 'Photo' },
       { key: 'firstName', label: 'First Name' },
       { key: 'lastName', label: 'Last Name' },
       { key: 'date', label: 'Date' },
@@ -21,7 +23,7 @@ class AdminPayments extends React.Component {
       { key: 'paid', label: 'Paid' }
     ];
     this.EDITABLE_COLUMNS = this.COLUMNS.filter((c) => {
-      return !['firstName', 'lastName'].includes(c.key);
+      return !['photoUrl', 'firstName', 'lastName'].includes(c.key);
     });
     this.COLUMN_KEYS = this.COLUMNS.map((c) => c.key);
 
@@ -209,23 +211,6 @@ class AdminPayments extends React.Component {
   }
 
   render() {
-    const columnHeaders = this.COLUMNS.map((column) => {
-      const ascIconClass = (column.key === this.state.sort.column
-                            && this.state.sort.direction === 1) ? 'visible' : '';
-      const descIconClass = (column.key === this.state.sort.column
-                             && this.state.sort.direction === -1) ? 'visible' : '';
-      return (
-        <Reactable.Th column={column.key} key={column.key}>
-          <strong className="name-header">{column.label}</strong>
-          <i className={`ion-arrow-up-b sort-icon sort-asc ${ascIconClass}`} />
-          <i className={`ion-arrow-down-b sort-icon sort-desc ${descIconClass}`} />
-        </Reactable.Th>
-      );
-    });
-    const rows = this.state.payments.map((payment) => {
-      return (<Reactable.Tr data={payment} key={payment._id} id={payment._id}
-                            onClick={this.showUpdateModal} />);
-    });
     return (
       <AdminPage>
         <div className="thrn-create-button">
@@ -234,18 +219,10 @@ class AdminPayments extends React.Component {
             Create Payment
           </div>
         </div>
-        <Reactable.Table className="thrn-table"
-                         columns={this.COLUMNS}
-                         itemsPerPage={20} pageButtonLimit={5}
-                         sortable={this.COLUMN_KEYS}
-                         defaultSort={{column: 'firstName'}}
-                         onSort={this.updateSortState}
-                         filterable={this.COLUMN_KEYS}>
-          <Reactable.Thead>
-            {columnHeaders}
-          </Reactable.Thead>
-          {rows}
-        </Reactable.Table>
+        <AdminTable COLUMNS={this.COLUMNS}
+                    COLUMN_KEYS={this.COLUMN_KEYS}
+                    data={this.state.payments}
+                    onRowClick={this.showUpdateModal} />
         <AdminModal FIELDS={this.EDITABLE_COLUMNS}
                     title={this.state.modal.title}
                     data={this.state.modal.data}

@@ -175,3 +175,29 @@
 .react-autosuggest__suggestion--highlighted {
   background-color: #ddd;
 }
+
+.suggestion-container {
+  font-size: 0.8em;
+  height: 40px;
+  position: relative;
+
+  img {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+  }
+  .suggestion-text {
+    font-weight: 900;
+    position: absolute;
+    left: 50px;
+    top: 0px;
+  }
+  .suggestion-subtext {
+    color: $THRN_GRAY;
+    position: absolute;
+    left: 50px;
+    bottom: 0px;
+  }
+}
