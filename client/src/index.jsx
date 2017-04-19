@@ -6,7 +6,9 @@ import './index.scss';
 
 import {WebsiteHome, WebsiteLogin, WebsiteRegister,
         WebsiteAbout} from './website.jsx';
-import {AdminUsers, AdminSessions, AdminPayments} from './admin.jsx';
+import {AdminUsers} from './admin/users.jsx';
+import {AdminSessions} from './admin/sessions.jsx';
+import {AdminPayments} from './admin/payments.jsx';
 
 class App extends React.Component {
   render() {

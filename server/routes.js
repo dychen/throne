@@ -1,5 +1,7 @@
 const path = require('path');
 const User = require(__ROOT_DIR + '/server/models/User.js');
+const UserSession = require(__ROOT_DIR + '/server/models/UserSession.js');
+const UserPayment = require(__ROOT_DIR + '/server/models/UserPayment.js');
 
 module.exports = (app, express) => {
   app.post('/auth/v1/register', (req, res) => {
@@ -35,8 +37,19 @@ module.exports = (app, express) => {
     res.send(data);
   });
 
+  /* API routes */
+
   app.get('/api/v1/users', (req, res) => {
     User.getUserList((err, users) => {
+      if (err)
+        return res.status(400).send({ error: err });
+      else
+        return res.send({ data: users });
+    });
+  });
+
+  app.get('/api/v1/users/autocomplete', (req, res) => {
+    User.getUserAutocompleteList((err, users) => {
       if (err)
         return res.status(400).send({ error: err });
       else
@@ -61,6 +74,63 @@ module.exports = (app, express) => {
         return res.send({ data: users });
     });
   });
+
+  app.get('/api/v1/sessions', (req, res) => {
+    UserSession.getUserSessionList((err, userSessions) => {
+      if (err)
+        return res.status(400).send({ error: err });
+      else
+        return res.send({ data: userSessions });
+    });
+  });
+
+  app.post('/api/v1/sessions', (req, res) => {
+    UserSession.createUserSession(req.body, (err, userSessions) => {
+      if (err)
+        return res.status(400).send({ error: err });
+      else
+        return res.send({ data: userSessions });
+    });
+  });
+
+  app.post('/api/v1/sessions/:sessionId', (req, res) => {
+    UserSession.updateUserSession(req.body, req.params.sessionId,
+                                  (err, userSessions) => {
+      if (err)
+        return res.status(400).send({ error: err });
+      else
+        return res.send({ data: userSessions });
+    });
+  });
+
+  app.get('/api/v1/payments', (req, res) => {
+    UserPayment.getUserPaymentList((err, userPayments) => {
+      if (err)
+        return res.status(400).send({ error: err });
+      else
+        return res.send({ data: userPayments });
+    });
+  });
+
+  app.post('/api/v1/payments', (req, res) => {
+    UserPayment.createUserPayment(req.body, (err, userPayments) => {
+      if (err)
+        return res.status(400).send({ error: err });
+      else
+        return res.send({ data: userPayments });
+    });
+  });
+
+  app.post('/api/v1/payments/:paymentId', (req, res) => {
+    UserPayment.updateUserPayment(req.body, req.params.paymentId,
+                                  (err, userPayments) => {
+      if (err)
+        return res.status(400).send({ error: err });
+      else
+        return res.send({ data: userPayments });
+    });
+  });
+
 
   // Serve static assets
   app.use(express.static(path.join(__ROOT_DIR, '/client/dist')));

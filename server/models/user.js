@@ -48,7 +48,9 @@ const userSchema = new mongoose.Schema({
     type: Date,
     required: true,
     default: new Date()
-  }
+  },
+  sessions : [{ type: mongoose.Schema.Types.ObjectId, ref: 'UserSession' }],
+  payments : [{ type: mongoose.Schema.Types.ObjectId, ref: 'UserPayment' }]
 }, {
   collection: 'users'
 });
@@ -114,6 +116,20 @@ userSchema.statics.getUserList = (callback) => {
   });
 }
 
+// For autocomplete
+userSchema.statics.getUserAutocompleteList = (callback) => {
+  User.find(
+    { verified: true },
+    'firstName lastName email phone',
+    (err, users) => {
+    if (err) {
+      console.error(err);
+      return callback(err);
+    }
+    return callback(null, users);
+  });
+}
+
 userSchema.statics.createUser = (data, callback) => {
   User.create({
     firstName: data.firstName,
@@ -124,7 +140,7 @@ userSchema.statics.createUser = (data, callback) => {
     verified: true,
     active: true,
     referrer: data.referrer,
-    createdDate: new Date()
+    createdAt: new Date()
   }, (err, user) => {
     if (err) {
       console.error(err);
@@ -134,7 +150,7 @@ userSchema.statics.createUser = (data, callback) => {
       return User.getUserList(callback);
     }
   });
-}
+};
 
 userSchema.statics.updateUser = (data, userId, callback) => {
   User.findOneAndUpdate({
@@ -158,8 +174,7 @@ userSchema.statics.updateUser = (data, userId, callback) => {
       return User.getUserList(callback);
     }
   });
-}
-
+};
 
 const User = mongoose.model('User', userSchema);
 

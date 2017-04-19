@@ -1,88 +1,32 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
 import Reactable from 'reactable';
 import moment from 'moment';
 import 'whatwg-fetch';
 
+import {AdminPage} from './admin.jsx';
 import {AdminModal} from './modal.jsx';
 
-import './admin.scss';
-
-class AdminSidenav extends React.Component {
+class AdminPayments extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      'minimized': false
-    };
-
-    this.toggleMinimized = this.toggleMinimized.bind(this);
-  }
-
-  toggleMinimized(e) {
-    this.setState({ 'minimized': !this.state.minimized });
-  }
-
-  render() {
-    const sidenavClass = (this.state.minimized
-                          ? 'thrn-sidenav minimized' : 'thrn-sidenav');
-
-    return (
-      <div className={sidenavClass}>
-        <div className="thrn-sidenav-top">
-          <div className="thrn-sidenav-item logo"
-               onClick={this.toggleMinimized}>
-            <i className="ion-navicon nav-hamburger" />
-            <span className="minimized-sidenav-hidden">Throne</span>
-          </div>
-          <Link to="/admin/users">
-            <div className="thrn-sidenav-item link">
-              <i className="ion-person-stalker" />
-              <span className="minimized-sidenav-hidden">
-                Users
-              </span>
-            </div>
-          </Link>
-          <Link to="/admin/sessions">
-            <div className="thrn-sidenav-item link">
-              <i className="ion-clock" />
-              <span className="minimized-sidenav-hidden">
-                Sessions
-              </span>
-            </div>
-          </Link>
-          <Link to="/admin/payments">
-            <div className="thrn-sidenav-item link">
-              <i className="ion-cash" />
-              <span className="minimized-sidenav-hidden">
-                Payments
-              </span>
-            </div>
-          </Link>
-        </div>
-        <div className="thrn-sidenav-bottom">
-        </div>
-      </div>
-    );
-  }
-}
-
-class AdminUsers extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.API_URL = `${SERVER_URL}/api/v1/users`
+    this.API_URL = `${SERVER_URL}/api/v1/payments`
     this.COLUMNS = [
+      { key: '_user', label: 'User Id' },
       { key: 'firstName', label: 'First Name' },
       { key: 'lastName', label: 'Last Name' },
-      { key: 'email', label: 'Email' },
-      { key: 'phone', label: 'Phone Number' },
-      { key: 'referrer', label: 'Referrer' },
-      { key: 'createdAt', label: 'Registration Date' }
+      { key: 'date', label: 'Date' },
+      { key: 'type', label: 'Type' },
+      { key: 'amount', label: 'Amount' },
+      { key: 'paid', label: 'Paid' }
     ];
+    this.EDITABLE_COLUMNS = this.COLUMNS.filter((c) => {
+      return !['firstName', 'lastName'].includes(c.key);
+    });
     this.COLUMN_KEYS = this.COLUMNS.map((c) => c.key);
 
     this.state = {
+      payments: [],
       users: [],
       sort: { column: 'firstName', direction: 1 },
       modal: {
@@ -99,11 +43,11 @@ class AdminUsers extends React.Component {
     this.showUpdateModal = this.showUpdateModal.bind(this);
     this.hideModal = this.hideModal.bind(this);
 
-    this.getUserList = this.getUserList.bind(this);
-    this.createUser = this.createUser.bind(this);
-    this.updateUser = this.updateUser.bind(this);
+    this.getPaymentList = this.getPaymentList.bind(this);
+    this.createPayment = this.createPayment.bind(this);
+    this.updatePayment = this.updatePayment.bind(this);
 
-    this.getUserList();
+    this.getPaymentList();
   }
 
   showCreateModal(e) {
@@ -111,24 +55,24 @@ class AdminUsers extends React.Component {
     this.setState({
       modal: {
         visible: true,
-        title: 'Create a user',
+        title: 'Create a payment',
         data: {},
-        onSave: this.createUser
+        onSave: this.createPayment
       }
     });
   }
 
   showUpdateModal(e) {
     e.stopPropagation(); // Don't propagate to hideModal() handlers
-    const userIdx = this.state.users.findIndex((user) => {
-      return user._id === e.currentTarget.id
+    const paymentIdx = this.state.payments.findIndex((payment) => {
+      return payment._id === e.currentTarget.id
     });
     this.setState({
       modal: {
         visible: true,
-        title: 'Update a user',
-        data: this.state.users[userIdx],
-        onSave: this.updateUser
+        title: 'Update a payment',
+        data: this.state.payments[paymentIdx],
+        onSave: this.updatePayment
       }
     });
   }
@@ -152,7 +96,7 @@ class AdminUsers extends React.Component {
     this.setState({ sort: newSortState });
   }
 
-  getUserList() {
+  getPaymentList() {
     fetch(this.API_URL, {
       method: 'GET'
     })
@@ -169,7 +113,7 @@ class AdminUsers extends React.Component {
     })
     /*
      * Response format: {
-     *   data: [User list]
+     *   data: [UserPayment list]
      * }
      */
     .then(json => {
@@ -177,9 +121,9 @@ class AdminUsers extends React.Component {
       console.log('Success', json);
       // Transform dates
       json.data.forEach((d) => {
-        d.createdAt = moment(d.createdAt).format('ll')
+        d.date = moment(d.date).format('YYYY-MM-DD HH:mm');
       });
-      this.setState({ users: json.data });
+      this.setState({ payments: json.data });
       return json;
     })
     .catch(err => {
@@ -188,7 +132,7 @@ class AdminUsers extends React.Component {
     });
   }
 
-  createUser(obj) {
+  createPayment(obj) {
     fetch(this.API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -207,7 +151,7 @@ class AdminUsers extends React.Component {
     })
     /*
      * Response format: {
-     *   data: [User list]
+     *   data: [UserPayment list]
      * }
      */
     .then(json => {
@@ -215,9 +159,9 @@ class AdminUsers extends React.Component {
       console.log('Success', json);
       // Transform dates
       json.data.forEach((d) => {
-        d.createdAt = moment(d.createdAt).format('ll');
+        d.date = moment(d.date).format('YYYY-MM-DD HH:mm');
       });
-      this.setState({ users: json.data });
+      this.setState({ payments: json.data });
       return json;
     })
     .catch(err => {
@@ -226,7 +170,7 @@ class AdminUsers extends React.Component {
     });
   }
 
-  updateUser(obj, objId) {
+  updatePayment(obj, objId) {
     fetch(`${this.API_URL}/${objId}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -245,7 +189,7 @@ class AdminUsers extends React.Component {
     })
     /*
      * Response format: {
-     *   data: [User list]
+     *   data: [UserPayment list]
      * }
      */
     .then(json => {
@@ -253,9 +197,9 @@ class AdminUsers extends React.Component {
       console.log('Success', json);
       // Transform dates
       json.data.forEach((d) => {
-        d.createdAt = moment(d.createdAt).format('ll');
+        d.date = moment(d.date).format('YYYY-MM-DD HH:mm');
       });
-      this.setState({ users: json.data });
+      this.setState({ payments: json.data });
       return json;
     })
     .catch(err => {
@@ -278,8 +222,8 @@ class AdminUsers extends React.Component {
         </Reactable.Th>
       );
     });
-    const rows = this.state.users.map((user) => {
-      return (<Reactable.Tr data={user} key={user._id} id={user._id}
+    const rows = this.state.payments.map((payment) => {
+      return (<Reactable.Tr data={payment} key={payment._id} id={payment._id}
                             onClick={this.showUpdateModal} />);
     });
     return (
@@ -287,7 +231,7 @@ class AdminUsers extends React.Component {
         <div className="thrn-create-button">
           <div className="thrn-button"
                onClick={this.showCreateModal}>
-            Create User
+            Create Payment
           </div>
         </div>
         <Reactable.Table className="thrn-table"
@@ -302,7 +246,7 @@ class AdminUsers extends React.Component {
           </Reactable.Thead>
           {rows}
         </Reactable.Table>
-        <AdminModal FIELDS={this.COLUMNS}
+        <AdminModal FIELDS={this.EDITABLE_COLUMNS}
                     title={this.state.modal.title}
                     data={this.state.modal.data}
                     visible={this.state.modal.visible}
@@ -313,37 +257,4 @@ class AdminUsers extends React.Component {
   }
 }
 
-class AdminSessions extends React.Component {
-  render() {
-    return (
-      <AdminPage>
-        Sessions
-      </AdminPage>
-    );
-  }
-}
-
-class AdminPayments extends React.Component {
-  render() {
-    return (
-      <AdminPage>
-        Payments
-      </AdminPage>
-    );
-  }
-}
-
-class AdminPage extends React.Component {
-  render() {
-    return (
-      <div className="thrn-admin-container">
-        <AdminSidenav />
-        <div className="thrn-admin-main">
-          {this.props.children}
-        </div>
-      </div>
-    );
-  }
-}
-
-export {AdminUsers, AdminSessions, AdminPayments};
+export {AdminPayments};

@@ -1,15 +1,16 @@
 const mongoose = require('mongoose');
 
+// One-to-Many reference: http://mongoosejs.com/docs/populate.html
 const userSessionSchema = new mongoose.Schema({
-  user: {
-    type: Schema.Types.ObjectId,
+  _user: {
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
   startTime: {
     type: Date
   },
   paused: {
-    type: Boolean
+    type: Boolean,
     required: true,
     default: false
   },
@@ -21,9 +22,14 @@ const userSessionSchema = new mongoose.Schema({
   active: {
     type: Boolean,
     required: true
+  },
+  createdAt: {
+    type: Date,
+    required: true,
+    default: new Date()
   }
 }, {
-  collection: 'users'
+  collection: 'user_sessions'
 });
 
 const UserSession = mongoose.model('UserSession', userSessionSchema);
