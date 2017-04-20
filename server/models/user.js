@@ -3,6 +3,9 @@ const auth = require(__ROOT_DIR + '/server/auth.js');
 const UserSession = require(__ROOT_DIR + '/server/models/UserSession.js');
 const UserPayment = require(__ROOT_DIR + '/server/models/UserPayment.js');
 
+const DEFAULT_PHOTO_URL = ('https://s3-us-west-1.amazonaws.com/throne-s3/'
+                           + 'images/default-profile.png');
+
 const userSchema = new mongoose.Schema({
   firstName: {
     type: String,
@@ -23,7 +26,8 @@ const userSchema = new mongoose.Schema({
     unique: true
   },
   photoUrl: {
-    type: String
+    type: String,
+    default: DEFAULT_PHOTO_URL
   },
   countryCode: {
     type: String,
@@ -207,6 +211,7 @@ userSchema.statics.startSession = (userId, callback) => {
       UserSession.create({
         _user: userId,
         startTime: new Date(),
+        table: 'None',
         active: true
       }, (err, userSession) => {
         if (err) {
@@ -245,6 +250,7 @@ userSchema.statics.endSession = (sessionId, callback) => {
     _id: sessionId
   }, {
     endTime: new Date(),
+    table: 'None',
     active: false
   }, {
     upsert: false,

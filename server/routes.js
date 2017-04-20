@@ -106,6 +106,16 @@ module.exports = (app, express) => {
     });
   });
 
+  app.post('/api/v1/sessions/tables/:sessionId', (req, res) => {
+    UserSession.updateUserSessionTable(req.body, req.params.sessionId,
+                                       (err, userSessions) => {
+      if (err)
+        return res.status(400).send({ error: err });
+      else
+        return res.send({ data: userSessions });
+    });
+  });
+
   /* Payments */
 
   app.get('/api/v1/payments', (req, res) => {

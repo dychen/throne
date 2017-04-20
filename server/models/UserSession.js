@@ -12,6 +12,10 @@ const userSessionSchema = new mongoose.Schema({
   endTime: {
     type: Date
   },
+  table: {
+    type: String,
+    default: 'None'
+  },
   active: {
     type: Boolean,
     required: true
@@ -26,7 +30,7 @@ const userSessionSchema = new mongoose.Schema({
 });
 
 userSessionSchema.statics.getUserSessionList = (callback) => {
-  UserSession.find({}, '_user startTime endTime active')
+  UserSession.find({}, '_user startTime endTime table active')
     .populate('_user', 'photoUrl firstName lastName')
     .exec((err, userSessions) => {
       if (err) {
@@ -43,10 +47,30 @@ userSessionSchema.statics.getUserSessionList = (callback) => {
           lastName: userSession._user ? userSession._user.lastName : undefined,
           startTime: userSession.startTime,
           endTime: userSession.endTime,
+          table: userSession.table,
           active: userSession.active
         }
       });
       return callback(null, flattenedUserSessions);
+  });
+};
+
+userSessionSchema.statics.updateUserSessionTable = (data, sessionId, callback) => {
+  UserSession.findOneAndUpdate({
+    _id: sessionId
+  }, {
+    table: data.table
+  }, {
+    upsert: false,
+    new: true
+  }, (err, userSession) => {
+    if (err) {
+      console.error(err);
+      return callback(err);
+    }
+    else {
+      return UserSession.getUserSessionList(callback);
+    }
   });
 };
 

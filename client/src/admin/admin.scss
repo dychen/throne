@@ -27,3 +27,31 @@
   @include thrn-button(200px, 40px, $THRN_DARK_GRAY, $THRN_WHITE);
 }
 
+/* Nav tabs */
+
+// The container beneath nav tabs
+.thrn-admin-container {
+  background-color: $THRN_OFF_WHITE;
+}
+
+.thrn-nav-tab-container {
+  // This cascade of displays overrides what's in bootstrap.css to get the tabs
+  // to display correctly inside a div
+  display: flex;
+  > ul {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    > li {
+      display: block;
+      > a {
+        display: inline-block;
+      }
+    }
+  }
+}
+
+.thrn-nav-view-container {
+  padding: 10px;
+  background-color: $THRN_WHITE;
+}

@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import {Route, BrowserRouter} from 'react-router-dom';
 
 import './index.scss';
+import './public/css/bootstrap.css';
 
 import {WebsiteHome, WebsiteLogin, WebsiteRegister,
         WebsiteAbout} from './website.jsx';

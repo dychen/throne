@@ -7,7 +7,8 @@ const userTableSchema = new mongoose.Schema({
     ref: 'User'
   },
   table: {
-    type: String
+    type: String,
+    default: ''
   },
   startTime: {
     type: Date

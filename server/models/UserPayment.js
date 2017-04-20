@@ -61,7 +61,7 @@ userPaymentSchema.statics.getUserPaymentList = (callback) => {
       });
       return callback(null, flattenedUserPayments);
   });
-}
+};
 
 userPaymentSchema.statics.createUserPayment = (data, callback) => {
   UserPayment.create({
@@ -80,7 +80,7 @@ userPaymentSchema.statics.createUserPayment = (data, callback) => {
       return UserPayment.getUserPaymentList(callback);
     }
   });
-}
+};
 
 userPaymentSchema.statics.updateUserPayment = (data, paymentId, callback) => {
   UserPayment.findOneAndUpdate({
@@ -103,7 +103,7 @@ userPaymentSchema.statics.updateUserPayment = (data, paymentId, callback) => {
       return UserPayment.getUserPaymentList(callback);
     }
   });
-}
+};
 
 const UserPayment = mongoose.model('UserPayment', userPaymentSchema);
 

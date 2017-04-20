@@ -41,6 +41,9 @@ table.thrn-table {
   tbody {
     tr {
       width: 100%;
+      td.photo-container {
+        text-align: center;
+      }
       td {
         padding: 10px;
         text-align: left;
@@ -50,13 +53,13 @@ table.thrn-table {
           height: 40px;
           border-radius: 40px;
         }
-        div.cell-button.green {
+        div.thrn-cell-button.green {
           @include thrn-button(auto, auto, $THRN_GREEN, $THRN_WHITE);
         }
-        div.cell-button.red {
+        div.thrn-cell-button.red {
           @include thrn-button(auto, auto, $THRN_RED, $THRN_WHITE);
         }
-        div.cell-button.inactive {
+        div.thrn-cell-button.inactive {
           > div.thrn-button {
             color: $THRN_GRAY;
 
@@ -71,6 +74,26 @@ table.thrn-table {
 
             opacity: 0.5;
             cursor: pointer;
+          }
+        }
+        div.thrn-cell-dropdown {
+          button {
+            color: $THRN_DARK_GRAY;
+
+            background: $THRN_WHITE;
+            padding: 10px;
+            border: 1px $THRN_DARK_GRAY solid;
+            border-radius: 5px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            @include hvr-fade($THRN_WHITE, $THRN_DARK_GRAY);
+          }
+          // These are to override bootstrap.css for proper display
+          button {
+            width: 100%;
           }
         }
       }

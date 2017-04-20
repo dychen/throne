@@ -1,12 +1,13 @@
 import React from 'react';
 import Reactable from 'reactable';
+import {DropdownButton, MenuItem} from 'react-bootstrap';
 
 import './table.scss';
 
 /*
  * props:
  *   value: Underlying value
- *   data: Row object containing the cell
+ *   data [Object]: Row object containing the cell
  *   getDisplayFromValue [function]: Function to compute button display text
  *                                   based on the value
  *   getClassNameFromValue [function]: Function to compute CSS class based on
@@ -41,7 +42,7 @@ class ButtonCell extends React.Component {
   render() {
     const className = this.getClassNameFromValue(this.props.value);
     return (
-      <div className={`cell-button ${className}`}>
+      <div className={`thrn-cell-button ${className}`}>
         <div className="thrn-button"
              onClick={this.onClick}>
           {this.getDisplayFromValue(this.props.value)}
@@ -50,6 +51,43 @@ class ButtonCell extends React.Component {
     );
   }
 };
+
+/*
+ * props:
+ *   value: Underlying value
+ *   data [Object]: Row object containing the cell
+ *   options [Array]: List of option strings to choose from
+ *   onSelect [function]: Function to execute when an option is selected
+ */
+class DropdownCell extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.onSelect = this.onSelect.bind(this);
+  }
+
+  onSelect(eventKey, e) {
+    this.props.onSelect(e, eventKey, this.props.data);
+  }
+
+  render() {
+    const menuItems = this.props.options.map((option) => {
+      return (
+        <MenuItem key={option} eventKey={option} onSelect={this.onSelect}>
+          {option}
+        </MenuItem>
+      );
+    });
+    return (
+      <div className="thrn-cell-dropdown">
+        <DropdownButton id={`thrn-cell-dropdown-${this.props.data._id}`}
+                        title={this.props.value}>
+          {menuItems}
+        </DropdownButton>
+      </div>
+    );
+  }
+}
 
 /*
  * props:
@@ -109,7 +147,8 @@ class AdminTable extends React.Component {
         // Images
         if (column.key === 'photoUrl') {
           return (
-            <Reactable.Td key={`${data._id}-${column.key}`}
+            <Reactable.Td className="photo-container"
+                          key={`${data._id}-${column.key}`}
                           column={column.key}>
               {Reactable.unsafe(`<img src=${data[column.key]} />`)}
             </Reactable.Td>
@@ -118,15 +157,40 @@ class AdminTable extends React.Component {
         // Buttons
         else if (this.props.CLICKABLE_COLUMNS
                  && this.props.CLICKABLE_COLUMNS[column.key]) {
-          const clickFunctions = this.props.CLICKABLE_COLUMNS[column.key];
+          const buttonProps = this.props.CLICKABLE_COLUMNS[column.key];
           return (
             <Reactable.Td key={`${data._id}-${column.key}`}
                           column={column.key}>
               <ButtonCell value={data[column.key]}
                           data={data}
-                          getClassNameFromValue={clickFunctions.getClassNameFromValue}
-                          getDisplayFromValue={clickFunctions.getDisplayFromValue}
-                          onClick={clickFunctions.onClick} />
+                          getClassNameFromValue={buttonProps.getClassNameFromValue}
+                          getDisplayFromValue={buttonProps.getDisplayFromValue}
+                          onClick={buttonProps.onClick} />
+            </Reactable.Td>
+          );
+        }
+        // Dropdowns
+        else if (this.props.DROPDOWN_COLUMNS
+                 && this.props.DROPDOWN_COLUMNS[column.key]) {
+          const dropdownProps = this.props.DROPDOWN_COLUMNS[column.key];
+          return (
+            <Reactable.Td key={`${data._id}-${column.key}`}
+                          column={column.key}>
+              <DropdownCell value={data[column.key]}
+                            data={data}
+                            options={dropdownProps.options}
+                            onSelect={dropdownProps.onSelect} />
+            </Reactable.Td>
+          );
+        }
+        // Derived columns - only takes one attribute: getDisplayFromRow
+        else if (this.props.DERIVED_COLUMNS
+                 && this.props.DERIVED_COLUMNS[column.key]) {
+          const dropdownProps = this.props.DERIVED_COLUMNS[column.key];
+          return (
+            <Reactable.Td key={`${data._id}-${column.key}`}
+                          column={column.key}>
+              {dropdownProps.getDisplayFromRow(data)}
             </Reactable.Td>
           );
         }

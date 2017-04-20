@@ -1,4 +1,5 @@
 import React from 'react';
+import {Nav, NavItem} from 'react-bootstrap';
 import moment from 'moment';
 import 'whatwg-fetch';
 
@@ -15,6 +16,7 @@ class AdminUsers extends React.Component {
     super(props);
 
     this.state = {
+      view: 'verified',
       users: [],
       modal: {
         visible: false,
@@ -23,6 +25,10 @@ class AdminUsers extends React.Component {
         onSave: null
       }
     };
+
+    // Nav tab methods
+    this.changeView = this.changeView.bind(this);
+    this._filterUsers = this._filterUsers.bind(this);
 
     // Modal methods
     this.showCreateModal = this.showCreateModal.bind(this);
@@ -65,6 +71,17 @@ class AdminUsers extends React.Component {
     this.COLUMN_KEYS = this.COLUMNS.map((c) => c.key);
 
     this.getUserList();
+  }
+
+  changeView(eventKey, e) {
+    this.setState({ view: eventKey });
+  }
+
+  _filterUsers(users) {
+    if (this.state.view === 'verified')
+      return users.filter((user) => user.verified);
+    else
+      return users.filter((user) => !user.verified);
   }
 
   showCreateModal(e) {
@@ -268,23 +285,33 @@ class AdminUsers extends React.Component {
   render() {
     return (
       <AdminPage>
-        <div className="thrn-create-button">
-          <div className="thrn-button"
-               onClick={this.showCreateModal}>
-            Create User
-          </div>
+        <div className="thrn-nav-tab-container">
+          <Nav bsStyle="tabs"
+               activeKey={this.state.view}
+               onSelect={this.changeView}>
+            <NavItem eventKey="verified">Users</NavItem>
+            <NavItem eventKey="unverified">Unverified</NavItem>
+          </Nav>
         </div>
-        <AdminTable COLUMNS={this.COLUMNS}
-                    CLICKABLE_COLUMNS={this.CLICKABLE_COLUMNS}
-                    COLUMN_KEYS={this.COLUMN_KEYS}
-                    data={this.state.users}
-                    onRowClick={this.showUpdateModal} />
-        <AdminModal FIELDS={this.EDITABLE_COLUMNS}
-                    title={this.state.modal.title}
-                    data={this.state.modal.data}
-                    visible={this.state.modal.visible}
-                    hideModal={this.hideModal}
-                    onSave={this.state.modal.onSave} />
+        <div className="thrn-nav-view-container">
+          <div className="thrn-create-button">
+            <div className="thrn-button"
+                 onClick={this.showCreateModal}>
+              Create User
+            </div>
+          </div>
+          <AdminTable COLUMNS={this.COLUMNS}
+                      CLICKABLE_COLUMNS={this.CLICKABLE_COLUMNS}
+                      COLUMN_KEYS={this.COLUMN_KEYS}
+                      data={this._filterUsers(this.state.users)}
+                      onRowClick={this.showUpdateModal} />
+          <AdminModal FIELDS={this.EDITABLE_COLUMNS}
+                      title={this.state.modal.title}
+                      data={this.state.modal.data}
+                      visible={this.state.modal.visible}
+                      hideModal={this.hideModal}
+                      onSave={this.state.modal.onSave} />
+        </div>
       </AdminPage>
     );
   }

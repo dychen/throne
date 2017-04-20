@@ -203,22 +203,24 @@ class AdminPayments extends React.Component {
   render() {
     return (
       <AdminPage>
-        <div className="thrn-create-button">
-          <div className="thrn-button"
-               onClick={this.showCreateModal}>
-            Create Payment
+        <div className="thrn-nav-view-container">
+          <div className="thrn-create-button">
+            <div className="thrn-button"
+                 onClick={this.showCreateModal}>
+              Create Payment
+            </div>
           </div>
+          <AdminTable COLUMNS={this.COLUMNS}
+                      COLUMN_KEYS={this.COLUMN_KEYS}
+                      data={this.state.payments}
+                      onRowClick={this.showUpdateModal} />
+          <AdminModal FIELDS={this.EDITABLE_COLUMNS}
+                      title={this.state.modal.title}
+                      data={this.state.modal.data}
+                      visible={this.state.modal.visible}
+                      hideModal={this.hideModal}
+                      onSave={this.state.modal.onSave} />
         </div>
-        <AdminTable COLUMNS={this.COLUMNS}
-                    COLUMN_KEYS={this.COLUMN_KEYS}
-                    data={this.state.payments}
-                    onRowClick={this.showUpdateModal} />
-        <AdminModal FIELDS={this.EDITABLE_COLUMNS}
-                    title={this.state.modal.title}
-                    data={this.state.modal.data}
-                    visible={this.state.modal.visible}
-                    hideModal={this.hideModal}
-                    onSave={this.state.modal.onSave} />
       </AdminPage>
     );
   }
