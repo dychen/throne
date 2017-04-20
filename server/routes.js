@@ -39,6 +39,8 @@ module.exports = (app, express) => {
 
   /* API routes */
 
+  /* Users */
+
   app.get('/api/v1/users', (req, res) => {
     User.getUserList((err, users) => {
       if (err)
@@ -75,6 +77,8 @@ module.exports = (app, express) => {
     });
   });
 
+  /* Sessions */
+
   app.get('/api/v1/sessions', (req, res) => {
     UserSession.getUserSessionList((err, userSessions) => {
       if (err)
@@ -84,8 +88,8 @@ module.exports = (app, express) => {
     });
   });
 
-  app.post('/api/v1/sessions', (req, res) => {
-    UserSession.createUserSession(req.body, (err, userSessions) => {
+  app.post('/api/v1/sessions/start/:userId', (req, res) => {
+    User.startSession(req.params.userId, (err, userSessions) => {
       if (err)
         return res.status(400).send({ error: err });
       else
@@ -93,15 +97,16 @@ module.exports = (app, express) => {
     });
   });
 
-  app.post('/api/v1/sessions/:sessionId', (req, res) => {
-    UserSession.updateUserSession(req.body, req.params.sessionId,
-                                  (err, userSessions) => {
+  app.post('/api/v1/sessions/end/:sessionId', (req, res) => {
+    User.endSession(req.params.sessionId, (err, userSessions) => {
       if (err)
         return res.status(400).send({ error: err });
       else
         return res.send({ data: userSessions });
     });
   });
+
+  /* Payments */
 
   app.get('/api/v1/payments', (req, res) => {
     UserPayment.getUserPaymentList((err, userPayments) => {

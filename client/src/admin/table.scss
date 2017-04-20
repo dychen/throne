@@ -50,6 +50,29 @@ table.thrn-table {
           height: 40px;
           border-radius: 40px;
         }
+        div.cell-button.green {
+          @include thrn-button(auto, auto, $THRN_GREEN, $THRN_WHITE);
+        }
+        div.cell-button.red {
+          @include thrn-button(auto, auto, $THRN_RED, $THRN_WHITE);
+        }
+        div.cell-button.inactive {
+          > div.thrn-button {
+            color: $THRN_GRAY;
+
+            background: $THRN_WHITE_GRAY;
+            padding: 10px;
+            border: 1px $THRN_GRAY solid;
+            border-radius: 5px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            opacity: 0.5;
+            cursor: pointer;
+          }
+        }
       }
     }
   }

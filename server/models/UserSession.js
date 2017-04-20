@@ -25,6 +25,31 @@ const userSessionSchema = new mongoose.Schema({
   collection: 'user_sessions'
 });
 
+userSessionSchema.statics.getUserSessionList = (callback) => {
+  UserSession.find({}, '_user startTime endTime active')
+    .populate('_user', 'photoUrl firstName lastName')
+    .exec((err, userSessions) => {
+      if (err) {
+        console.error(err);
+        return callback(err);
+      }
+      // Flatten
+      const flattenedUserSessions = userSessions.map((userSession) => {
+        return {
+          _id: userSession._id,
+          _user: userSession._user ? userSession._user._id : undefined,
+          photoUrl: userSession._user ? userSession._user.photoUrl : undefined,
+          firstName: userSession._user ? userSession._user.firstName : undefined,
+          lastName: userSession._user ? userSession._user.lastName : undefined,
+          startTime: userSession.startTime,
+          endTime: userSession.endTime,
+          active: userSession.active
+        }
+      });
+      return callback(null, flattenedUserSessions);
+  });
+};
+
 const UserSession = mongoose.model('UserSession', userSessionSchema);
 
 module.exports = UserSession;

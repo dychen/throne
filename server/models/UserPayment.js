@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+const PRICE_PER_HOUR = 10;
+
 // One-to-Many reference: http://mongoosejs.com/docs/populate.html
 const userPaymentSchema = new mongoose.Schema({
   _user: {
@@ -29,6 +31,11 @@ const userPaymentSchema = new mongoose.Schema({
 }, {
   collection: 'user_payments'
 });
+
+userPaymentSchema.statics.calculateAmount = (startTime, endTime) => {
+  return Math.ceil((endTime.getTime() - startTime.getTime())
+                   / (60 * 60 * 1000)) * PRICE_PER_HOUR;
+};
 
 userPaymentSchema.statics.getUserPaymentList = (callback) => {
   UserPayment.find({}, '_user date type amount paid')

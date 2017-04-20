@@ -5,7 +5,63 @@ import './table.scss';
 
 /*
  * props:
+ *   value: Underlying value
+ *   data: Row object containing the cell
+ *   getDisplayFromValue [function]: Function to compute button display text
+ *                                   based on the value
+ *   getClassNameFromValue [function]: Function to compute CSS class based on
+ *                                     the value
+ *   onClick [function]: Function to execute when the button is clicked
+ */
+class ButtonCell extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.getDisplayFromValue = this.getDisplayFromValue.bind(this);
+    this.getDisplayFromValue = this.getDisplayFromValue.bind(this);
+    this.onClick = this.onClick.bind(this);
+  }
+
+  getDisplayFromValue(value) {
+    if (this.props.getDisplayFromValue)
+      return this.props.getDisplayFromValue(value);
+    else
+      return value;
+  }
+  getClassNameFromValue(value) {
+    if (this.props.getClassNameFromValue)
+      return this.props.getClassNameFromValue(value);
+    else
+      return '';
+  }
+  onClick(e) {
+    this.props.onClick(e, this.props.value, this.props.data);
+  }
+
+  render() {
+    const className = this.getClassNameFromValue(this.props.value);
+    return (
+      <div className={`cell-button ${className}`}>
+        <div className="thrn-button"
+             onClick={this.onClick}>
+          {this.getDisplayFromValue(this.props.value)}
+        </div>
+      </div>
+    );
+  }
+};
+
+/*
+ * props:
  *   COLUMNS [Array]: [{ key: [column API key], label: [column display] }, ...]
+ *                    Each column object can optionally have the additional
+ *                    keys onClick, getClassNameFromValue, and
+ *                    getDisplayFromValue (all functions)
+ *   CLICKABLE_COLUMNS [Object]: { key: {
+ *     getDisplayFromValue: [function],
+ *     getClassNameFromValue: [function],
+ *     onClick: [function]
+ *   }
  *   COLUMN_KEYS: [Array]: [[column API key], [column API key], ...]
  *   data [Array]: [{ [Model to display] }, ...]
  *   onRowClick [function]: Function to trigger when a row is clicked.
@@ -18,7 +74,13 @@ class AdminTable extends React.Component {
       sort: { column: 'firstName', direction: 1 }
     };
 
+    this.onRowClick = this.onRowClick.bind(this);
     this.updateSortState = this.updateSortState.bind(this);
+  }
+
+  onRowClick(e) {
+    if (this.props.onRowClick)
+      this.props.onRowClick(e);
   }
 
   /*
@@ -44,11 +106,27 @@ class AdminTable extends React.Component {
     });
     const rows = this.props.data.map((data) => {
       const cells = this.props.COLUMNS.map((column) => {
+        // Images
         if (column.key === 'photoUrl') {
           return (
             <Reactable.Td key={`${data._id}-${column.key}`}
                           column={column.key}>
               {Reactable.unsafe(`<img src=${data[column.key]} />`)}
+            </Reactable.Td>
+          );
+        }
+        // Buttons
+        else if (this.props.CLICKABLE_COLUMNS
+                 && this.props.CLICKABLE_COLUMNS[column.key]) {
+          const clickFunctions = this.props.CLICKABLE_COLUMNS[column.key];
+          return (
+            <Reactable.Td key={`${data._id}-${column.key}`}
+                          column={column.key}>
+              <ButtonCell value={data[column.key]}
+                          data={data}
+                          getClassNameFromValue={clickFunctions.getClassNameFromValue}
+                          getDisplayFromValue={clickFunctions.getDisplayFromValue}
+                          onClick={clickFunctions.onClick} />
             </Reactable.Td>
           );
         }
@@ -63,7 +141,7 @@ class AdminTable extends React.Component {
       });
       return (
         <Reactable.Tr key={data._id} id={data._id}
-                      onClick={this.props.onRowClick}>
+                      onClick={this.onRowClick}>
           {cells}
         </Reactable.Tr>
       );

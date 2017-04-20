@@ -7,11 +7,15 @@ import {AdminPage} from './admin.jsx';
 import {AdminTable} from './table.jsx';
 import {AdminModal} from './modal.jsx';
 
+const transformAPIData = (d) => {
+  d.date = moment(d.date).format('YYYY-MM-DD HH:mm');
+};
+
 class AdminPayments extends React.Component {
   constructor(props) {
     super(props);
 
-    this.API_URL = `${SERVER_URL}/api/v1/payments`
+    this.API_URL = `${SERVER_URL}/api/v1/payments`;
     this.COLUMNS = [
       { key: '_user', label: 'User Id' },
       { key: 'photoUrl', label: 'Photo' },
@@ -30,7 +34,6 @@ class AdminPayments extends React.Component {
     this.state = {
       payments: [],
       users: [],
-      sort: { column: 'firstName', direction: 1 },
       modal: {
         visible: false,
         title: '',
@@ -39,12 +42,12 @@ class AdminPayments extends React.Component {
       }
     };
 
-    this.updateSortState = this.updateSortState.bind(this);
-
+    // Modal methods
     this.showCreateModal = this.showCreateModal.bind(this);
     this.showUpdateModal = this.showUpdateModal.bind(this);
     this.hideModal = this.hideModal.bind(this);
 
+    // API methods
     this.getPaymentList = this.getPaymentList.bind(this);
     this.createPayment = this.createPayment.bind(this);
     this.updatePayment = this.updatePayment.bind(this);
@@ -91,13 +94,6 @@ class AdminPayments extends React.Component {
     });
   }
 
-  /*
-   * Example: { column: 'firstName', direction: -1 }
-   */
-  updateSortState(newSortState) {
-    this.setState({ sort: newSortState });
-  }
-
   getPaymentList() {
     fetch(this.API_URL, {
       method: 'GET'
@@ -122,9 +118,7 @@ class AdminPayments extends React.Component {
       // Success
       console.log('Success', json);
       // Transform dates
-      json.data.forEach((d) => {
-        d.date = moment(d.date).format('YYYY-MM-DD HH:mm');
-      });
+      json.data.forEach(transformAPIData);
       this.setState({ payments: json.data });
       return json;
     })
@@ -160,9 +154,7 @@ class AdminPayments extends React.Component {
       // Success
       console.log('Success', json);
       // Transform dates
-      json.data.forEach((d) => {
-        d.date = moment(d.date).format('YYYY-MM-DD HH:mm');
-      });
+      json.data.forEach(transformAPIData);
       this.setState({ payments: json.data });
       return json;
     })
@@ -198,9 +190,7 @@ class AdminPayments extends React.Component {
       // Success
       console.log('Success', json);
       // Transform dates
-      json.data.forEach((d) => {
-        d.date = moment(d.date).format('YYYY-MM-DD HH:mm');
-      });
+      json.data.forEach(transformAPIData);
       this.setState({ payments: json.data });
       return json;
     })
