@@ -51,6 +51,7 @@ class AdminPayments extends React.Component {
     this.getPaymentList = this.getPaymentList.bind(this);
     this.createPayment = this.createPayment.bind(this);
     this.updatePayment = this.updatePayment.bind(this);
+    this.deletePayment = this.deletePayment.bind(this);
 
     this.getPaymentList();
   }
@@ -200,6 +201,40 @@ class AdminPayments extends React.Component {
     });
   }
 
+  deletePayment(objId) {
+    fetch(`${this.API_URL}/${objId}`, {
+      method: 'DELETE'
+    })
+    .then(function(response) {
+      if (response.ok) {
+        return response.json();
+      }
+      else {
+        return response.json().then(json => {
+          console.error(json);
+          throw new Error(json);
+        });
+      }
+    })
+    /*
+     * Response format: {
+     *   data: [UserPayment list]
+     * }
+     */
+    .then(json => {
+      // Success
+      console.log('Success', json);
+      // Transform dates
+      json.data.forEach(transformAPIData);
+      this.setState({ payments: json.data });
+      return json;
+    })
+    .catch(err => {
+      // Failure
+      return err;
+    });
+  }
+
   render() {
     return (
       <AdminPage>
@@ -210,7 +245,8 @@ class AdminPayments extends React.Component {
               Create Payment
             </div>
           </div>
-          <AdminTable COLUMNS={this.COLUMNS}
+          <AdminTable INITIAL_SORT={{ column: 'date', direction: -1 }}
+                      COLUMNS={this.COLUMNS}
                       COLUMN_KEYS={this.COLUMN_KEYS}
                       data={this.state.payments}
                       onRowClick={this.showUpdateModal} />
@@ -219,7 +255,8 @@ class AdminPayments extends React.Component {
                       data={this.state.modal.data}
                       visible={this.state.modal.visible}
                       hideModal={this.hideModal}
-                      onSave={this.state.modal.onSave} />
+                      onSave={this.state.modal.onSave}
+                      onDelete={this.deletePayment} />
         </div>
       </AdminPage>
     );

@@ -77,6 +77,15 @@ module.exports = (app, express) => {
     });
   });
 
+  app.delete('/api/v1/users/:userId', (req, res) => {
+    User.deleteUser(req.params.userId, (err, users) => {
+      if (err)
+        return res.status(400).send({ error: err });
+      else
+        return res.send({ data: users });
+    });
+  });
+
   /* Sessions */
 
   app.get('/api/v1/sessions', (req, res) => {
@@ -146,6 +155,15 @@ module.exports = (app, express) => {
     });
   });
 
+  app.delete('/api/v1/payments/:paymentId', (req, res) => {
+    UserPayment.deleteUserPayment(req.params.paymentId,
+                                  (err, userPayments) => {
+      if (err)
+        return res.status(400).send({ error: err });
+      else
+        return res.send({ data: userPayments });
+    });
+  });
 
   // Serve static assets
   app.use(express.static(path.join(__ROOT_DIR, '/client/dist')));

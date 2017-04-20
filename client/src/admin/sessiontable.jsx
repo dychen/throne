@@ -228,7 +228,8 @@ class AdminSessionTable extends React.Component {
 
   render() {
     return (
-      <AdminTable COLUMNS={this.COLUMNS}
+      <AdminTable INITIAL_SORT={{ column: 'startTime', direction: -1 }}
+                  COLUMNS={this.COLUMNS}
                   CLICKABLE_COLUMNS={this.CLICKABLE_COLUMNS}
                   DROPDOWN_COLUMNS={this.DROPDOWN_COLUMNS}
                   DERIVED_COLUMNS={this.DERIVED_COLUMNS}

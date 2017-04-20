@@ -105,6 +105,20 @@ userPaymentSchema.statics.updateUserPayment = (data, paymentId, callback) => {
   });
 };
 
+userPaymentSchema.statics.deleteUserPayment = (paymentId, callback) => {
+  UserPayment.findOneAndRemove({
+    _id: paymentId
+  }, (err, userPayment) => {
+    if (err) {
+      console.error(err);
+      return callback(err);
+    }
+    else {
+      return UserPayment.getUserPaymentList(callback);
+    }
+  });
+};
+
 const UserPayment = mongoose.model('UserPayment', userPaymentSchema);
 
 module.exports = UserPayment;

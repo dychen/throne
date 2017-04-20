@@ -9,10 +9,26 @@ class WebsiteHeader extends React.Component {
   render() {
     return (
       <div className="thrn-website-header">
-        <Link to="/home" className="header-link">HOME</Link>
-        <Link to="/login" className="header-link">LOGIN</Link>
-        <Link to="/register" className="header-link">REGISTER</Link>
-        <Link to="/about" className="header-link">ABOUT</Link>
+        <div className="thrn-header-desktop">
+          <Link to="/home" className="header-link">HOME</Link>
+          <Link to="/register" className="header-link">REGISTER</Link>
+          <Link to="/about" className="header-link">ABOUT</Link>
+          <Link to="/admin" className="header-link">ADMIN</Link>
+        </div>
+        <div className="thrn-header-mobile">
+          <Link to="/home" className="header-link">
+            <i className="ion-home" />
+          </Link>
+          <Link to="/register" className="header-link">
+            <i className="ion-person-add" />
+          </Link>
+          <Link to="/about" className="header-link">
+            <i className="ion-information-circled" />
+          </Link>
+          <Link to="/admin" className="header-link">
+            <i className="ion-log-in" />
+          </Link>
+        </div>
       </div>
     );
   }
@@ -41,11 +57,9 @@ class WebsiteHome extends React.Component {
           </span>
           <input className="thrn-input"
                  placeholder="your.email@gmail.com"/>
-          <Link to="/login">
-            <div className="thrn-button">
-              Login
-            </div>
-          </Link>
+          <div className="thrn-button">
+            Submit
+          </div>
           <Link to="/register">
             <div className="thrn-button">
               Register
@@ -57,6 +71,7 @@ class WebsiteHome extends React.Component {
   }
 }
 
+/* UNUSED */
 class WebsiteLogin extends React.Component {
   render() {
     return (

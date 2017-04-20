@@ -16,14 +16,10 @@ const userSchema = new mongoose.Schema({
     required: true
   },
   email: {
-    type: String,
-    required: true,
-    unique: true
+    type: String
   },
   phone: {
-    type: String,
-    required: true,
-    unique: true
+    type: String
   },
   photoUrl: {
     type: String,
@@ -54,12 +50,18 @@ const userSchema = new mongoose.Schema({
     type: String
   },
   referrer: {
-    type: String
+    type: String,
+    default: 'None'
   },
   createdAt: {
     type: Date,
     required: true,
     default: new Date()
+  },
+  deleted: {
+    type: Boolean,
+    required: true,
+    default: false
   },
   sessions : [{ type: mongoose.Schema.Types.ObjectId, ref: 'UserSession' }],
   payments : [{ type: mongoose.Schema.Types.ObjectId, ref: 'UserPayment' }]
@@ -117,7 +119,7 @@ userSchema.statics.verifyUser = function(userId, code, callback) {
 // http://mongoosejs.com/docs/queries.html
 userSchema.statics.getUserList = (callback) => {
   User.find(
-    {},
+    { deleted: false },
     'photoUrl firstName lastName email phone referrer createdAt verified active',
     (err, users) => {
     if (err) {
@@ -131,7 +133,7 @@ userSchema.statics.getUserList = (callback) => {
 // For autocomplete
 userSchema.statics.getUserAutocompleteList = (callback) => {
   User.find(
-    { verified: true },
+    { verified: true, deleted: false },
     'photoUrl firstName lastName email phone',
     (err, users) => {
     if (err) {
@@ -177,6 +179,25 @@ userSchema.statics.updateUser = (data, userId, callback) => {
     referrer: data.referrer
   }, {
     upsert: true,
+    new: true
+  }, (err, user) => {
+    if (err) {
+      console.error(err);
+      return callback(err);
+    }
+    else {
+      return User.getUserList(callback);
+    }
+  });
+};
+
+userSchema.statics.deleteUser = (userId, callback) => {
+  User.findOneAndUpdate({
+    _id: userId
+  }, {
+    deleted: true
+  }, {
+    upsert: false,
     new: true
   }, (err, user) => {
     if (err) {

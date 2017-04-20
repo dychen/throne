@@ -152,6 +152,9 @@ class UserField extends React.Component {
  *   onSave [function]: Function that lets the parent component respond to
  *                      "save" events in the data.
  *     f([Object: new object data]) => null
+ *   onDelete [function]: Function that lets the parent component respond to
+ *                        "delete" events in the data.
+ *     f([Object: new object data]) => null
  */
 class AdminModal extends React.Component {
   constructor(props) {
@@ -174,6 +177,7 @@ class AdminModal extends React.Component {
     this.handleUpdateEntity = this.handleUpdateEntity.bind(this);
     this.handleUpdateUser = this.handleUpdateUser.bind(this);
     this.handleSave = this.handleSave.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -220,6 +224,13 @@ class AdminModal extends React.Component {
     this.hideModal(e);
   }
 
+  handleDelete(e) {
+    if (this.state.data._id) {
+      this.props.onDelete(this.state.data._id);
+    }
+    this.hideModal(e);
+  }
+
   render() {
     const modalShowClass = (
       this.props.visible
@@ -254,6 +265,10 @@ class AdminModal extends React.Component {
              onClick={this._preventModalClose}>
           <div className="thrn-modal-header">
             {this.props.title}
+            <div className="modal-header-button thrn-button"
+                 onClick={this.handleDelete}>
+              <i className="ion-trash-a" />
+            </div>
           </div>
           <div className="thrn-modal-body">
             <div className="modal-body-section">

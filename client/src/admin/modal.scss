@@ -61,6 +61,26 @@
   display: flex;
   justify-content: center;
   align-items: center;
+
+  position: relative;
+  .modal-header-button {
+    position: absolute;
+    right: 20px;
+    top: 12px;
+    width: 15px;
+    height: 15px;
+    padding: 10px;
+    color: $THRN_RED;
+    background: $THRN_WHITE;
+    border: 1px solid $THRN_RED;
+    border-radius: 5px;
+
+    @include hvr-fade($THRN_WHITE, $THRN_RED);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
 
 .thrn-modal-body {

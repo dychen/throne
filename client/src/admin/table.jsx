@@ -91,6 +91,7 @@ class DropdownCell extends React.Component {
 
 /*
  * props:
+ *   INITIAL_SORT [Object]: { column: [column API key], direction: [1 or -1] }
  *   COLUMNS [Array]: [{ key: [column API key], label: [column display] }, ...]
  *                    Each column object can optionally have the additional
  *                    keys onClick, getClassNameFromValue, and
@@ -109,7 +110,7 @@ class AdminTable extends React.Component {
     super(props);
 
     this.state = {
-      sort: { column: 'firstName', direction: 1 }
+      sort: this.props.INITIAL_SORT || { column: 'firstName', direction: 1 }
     };
 
     this.onRowClick = this.onRowClick.bind(this);

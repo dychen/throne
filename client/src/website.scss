@@ -43,6 +43,17 @@ $BG_IMAGE_URL: 'https://s3-us-west-1.amazonaws.com/throne-s3/images/background.p
 
 /* Header */
 
+@media (max-width: $SCREEN_WIDTH_SM) {
+  .thrn-header-desktop {
+    display: none;
+  }
+}
+@media (min-width: $SCREEN_WIDTH_SM+1) {
+  .thrn-header-mobile {
+    display: none;
+  }
+}
+
 .thrn-website-header {
   //background-color: $THRN_BLACK;
   border-bottom: 1px solid $THRN_DARK_GRAY;
@@ -51,7 +62,7 @@ $BG_IMAGE_URL: 'https://s3-us-west-1.amazonaws.com/throne-s3/images/background.p
   align-items: center;
   justify-content: center;
 
-  > a.header-link {
+  a.header-link {
     font-weight: 900;
     font-size: 1.2em;
     width: 100px;
@@ -61,7 +72,7 @@ $BG_IMAGE_URL: 'https://s3-us-west-1.amazonaws.com/throne-s3/images/background.p
     @include hvr-color($THRN_WHITE);
   }
 
-  > a.header-link:active {
+  a.header-link:active {
     color: $THRN_WHITE;
   }
 }

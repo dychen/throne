@@ -39,6 +39,7 @@ class AdminUsers extends React.Component {
     this.getUserList = this.getUserList.bind(this);
     this.createUser = this.createUser.bind(this);
     this.updateUser = this.updateUser.bind(this);
+    this.deleteUser = this.deleteUser.bind(this);
     this.startSessionAPI = this.startSessionAPI.bind(this);
 
     // Table cell methods
@@ -229,6 +230,40 @@ class AdminUsers extends React.Component {
     });
   }
 
+  deleteUser(userId) {
+    fetch(`${this.API_URL}/${userId}`, {
+      method: 'DELETE'
+    })
+    .then(function(response) {
+      if (response.ok) {
+        return response.json();
+      }
+      else {
+        return response.json().then(json => {
+          console.error(json);
+          throw new Error(json);
+        });
+      }
+    })
+    /*
+     * Response format: {
+     *   data: [User list]
+     * }
+     */
+    .then(json => {
+      // Success
+      console.log('Success', json);
+      // Transform dates
+      json.data.forEach(transformAPIData);
+      this.setState({ users: json.data });
+      return json;
+    })
+    .catch(err => {
+      // Failure
+      return err;
+    });
+  }
+
   startSessionAPI(userId) {
     fetch(`${SERVER_URL}/api/v1/sessions/start/${userId}`, {
       method: 'POST',
@@ -300,7 +335,8 @@ class AdminUsers extends React.Component {
               Create User
             </div>
           </div>
-          <AdminTable COLUMNS={this.COLUMNS}
+          <AdminTable INITIAL_SORT={{ column: 'firstName', direction: 1 }}
+                      COLUMNS={this.COLUMNS}
                       CLICKABLE_COLUMNS={this.CLICKABLE_COLUMNS}
                       COLUMN_KEYS={this.COLUMN_KEYS}
                       data={this._filterUsers(this.state.users)}
@@ -310,7 +346,8 @@ class AdminUsers extends React.Component {
                       data={this.state.modal.data}
                       visible={this.state.modal.visible}
                       hideModal={this.hideModal}
-                      onSave={this.state.modal.onSave} />
+                      onSave={this.state.modal.onSave}
+                      onDelete={this.deleteUser} />
         </div>
       </AdminPage>
     );
