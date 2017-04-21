@@ -25,13 +25,12 @@ const loadServer = () => {
   if ('development' === app.get('env')) {
     // Dev stuff
   }
-  if ('staging' === app.get('env')) {
-    // Staging stuff
-    app.use(forceSSL);
-  }
   if ('production' === app.get('env')) {
     // Prod stuff
-    app.use(forceSSL);
+    // There are issues with Heroku and forceSSL, see the following GH issue:
+    // https://github.com/battlejj/express-force-ssl/issues/29
+    // The thread outlines a solution - fix eventually
+    //app.use(forceSSL);
   }
 
   // Initialize passport auth and sessions

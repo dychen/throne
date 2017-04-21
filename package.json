@@ -4,8 +4,9 @@
   "description": "Throne website and application",
   "main": "client/dist/app.js",
   "scripts": {
-    "build": "webpack --config ./webpack.config.js --progress --colors",
-    "server": "webpack-dev-server --content-base client/dist --progress --colors"
+    "build": "webpack --config ./webpack.config.dev.js --progress --colors",
+    "server": "webpack-dev-server --content-base client/dist --progress --colors",
+    "postinstall": "webpack -p --config ./webpack.config.prod.js --progress"
   },
   "author": "Daniel Chen",
   "license": "MIT",
@@ -16,8 +17,11 @@
     "cookie-parser": "^1.4.3",
     "express": "^4.15.2",
     "express-force-ssl": "^0.3.2",
+    "express-session": "^1.15.2",
     "immutable": "^3.8.1",
+    "moment": "^2.18.1",
     "mongoose": "^4.9.5",
+    "numeral": "^2.0.6",
     "passport": "^0.3.2",
     "passport-google-oauth": "^1.0.0",
     "path": "^0.12.7",
@@ -47,5 +51,9 @@
     "url-loader": "^0.5.8",
     "webpack": "^2.4.1",
     "webpack-dev-server": "^2.4.2"
-  }
+  },
+  "engines": {
+    "node": "7.9.0"
+  },
+  "start": "node server.js"
 }
