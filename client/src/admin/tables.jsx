@@ -1,8 +1,9 @@
 import React from 'react';
 import {Nav, NavItem} from 'react-bootstrap';
 
+import {TABLES} from '../constants.jsx';
 import {AdminPage} from './admin.jsx';
-import {AdminSessionTable, TABLES} from './sessiontable.jsx';
+import {AdminSessionTable} from './sessiontable.jsx';
 
 class AdminTables extends React.Component {
   constructor(props) {

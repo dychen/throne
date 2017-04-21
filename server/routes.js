@@ -120,6 +120,17 @@ module.exports = (app, passport, express) => {
     });
   });
 
+  // Limited version of sessions (just users and their tables) for table
+  // display. Unauthenticated because it's shown on the home page.
+  app.get('/api/v1/sessions/tables', (req, res) => {
+    UserSession.getUserSessionTableList((err, userSessions) => {
+      if (err)
+        return res.status(400).send({ error: err });
+      else
+        return res.send({ data: userSessions });
+    });
+  });
+
   app.post('/api/v1/sessions/start/:userId', isAdmin, (req, res) => {
     User.startSession(req.params.userId, (err, userSessions) => {
       if (err)

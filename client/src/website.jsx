@@ -5,6 +5,8 @@ import 'whatwg-fetch';
 
 import './website.scss';
 
+import {TABLES} from './constants.jsx';
+
 class WebsiteHeader extends React.Component {
   render() {
     return (
@@ -55,24 +57,107 @@ class WebsitePage extends React.Component {
   }
 }
 
-class WebsiteHome extends React.Component {
+class CardTable extends React.Component {
   render() {
+    const players = this.props.players.map((player) => {
+      const playerFirstLetter = player.firstName ? `${player.firstName[0]}.` : '';
+      const playerName = `${playerFirstLetter} ${player.lastName}`;
+      return (
+        <div className="table-player" key={player._id}>
+          <img className="table-player-photo" src={player.photoUrl} />
+          <div className="table-player-name">{playerName}</div>
+        </div>
+      )
+    });
+    return (
+      <div className="thrn-card-table">
+        {players}
+        <div className="table-name">
+          {this.props.name}
+        </div>
+      </div>
+    );
+  }
+}
+
+class WebsiteHome extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.API_URL = `${SERVER_URL}/api/v1/sessions/tables`;
+
+    this.state = {
+      players: []
+    };
+
+    this._tick = this._tick.bind(this);
+    this.getSessionList = this.getSessionList.bind(this);
+    this._filterPlayersByTable = this._filterPlayersByTable.bind(this);
+
+    this.getSessionList();
+  }
+
+  // Timer methods
+  componentDidMount() {
+    this.TIMER = setInterval(() => { this._tick(); }, 5000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.TIMER);
+  }
+
+  _tick() {
+    this.getSessionList();
+  }
+
+  getSessionList() {
+    fetch(this.API_URL, {
+      method: 'GET'
+    })
+    .then(function(response) {
+      if (response.ok) {
+        return response.json();
+      }
+      else {
+        return response.json().then(json => {
+          console.error(json);
+          throw new Error(json);
+        });
+      }
+    })
+    /*
+     * Response format: {
+     *   data: [UserSession list]
+     * }
+     */
+    .then(json => {
+      // Success
+      this.setState({ players: json.data });
+      return json;
+    })
+    .catch(err => {
+      // Failure
+      return err;
+    });
+  }
+
+  _filterPlayersByTable(players, table) {
+    return players.filter((player) => player.table === table);
+  }
+
+  render() {
+    const tables = TABLES.filter((table) => table !== 'None')
+                         .map((table) => {
+      return (
+        <CardTable key={table} name={table}
+                   players={this._filterPlayersByTable(this.state.players,
+                                                       table)} />
+      );
+    });
     return (
       <WebsitePage>
-        <div className="thrn-website-box">
-          <span className="thrn-input-header">
-            Request more info
-          </span>
-          <input className="thrn-input"
-                 placeholder="your.email@gmail.com"/>
-          <div className="thrn-button">
-            Submit
-          </div>
-          <Link to="/register">
-            <div className="thrn-button">
-              Register
-            </div>
-          </Link>
+        <div className="thrn-card-table-container">
+          {tables}
         </div>
       </WebsitePage>
     );

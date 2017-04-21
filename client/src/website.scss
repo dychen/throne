@@ -34,6 +34,9 @@ $BG_IMAGE_URL: 'https://s3-us-west-1.amazonaws.com/throne-s3/images/background.p
   height: 100%;
   width: 100%;
 
+  // Fix and discussion around flexbox container overflow:
+  // http://stackoverflow.com/questions/33454533/
+  // cant-scroll-to-top-of-flex-item-that-is-overflowing-container
   overflow-y: auto;
 
   display: flex;
@@ -89,6 +92,9 @@ $BG_IMAGE_URL: 'https://s3-us-west-1.amazonaws.com/throne-s3/images/background.p
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  // Fix for flexbox overflow behavior
+  margin: auto;
 
   .thrn-input-header {
     color: $THRN_WHITE;
@@ -160,6 +166,60 @@ $BG_IMAGE_URL: 'https://s3-us-west-1.amazonaws.com/throne-s3/images/background.p
         i {
           font-size: 20px;
         }
+      }
+    }
+  }
+}
+
+.thrn-card-table-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+
+  // Fix for flexbox overflow behavior
+  margin: auto;
+
+  .thrn-card-table {
+    background-color: $THRN_GREEN;
+    color: $THRN_WHITE;
+    height: 200px;
+    width: 300px;
+    margin: 30px;
+    border-radius: 50%;
+    border: 1em solid $THRN_BLACK;
+
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    .table-name {
+      font-size: 1.5em;
+      font-weight: 900;
+
+      // Center
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-50%);
+      -moz-transform: translateX(-50%) translateY(-50%);
+      -webkit-transform: translateX(-50%) translateY(-50%);
+      transform: translateX(-50%) translateY(-50%);
+    }
+    .table-player {
+      padding: 5px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      img.table-player-photo {
+        height: 50px;
+        width: 50px;
+        border-radius: 50px;
+        border: 3px solid $THRN_WHITE;
       }
     }
   }

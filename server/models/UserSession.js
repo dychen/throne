@@ -55,6 +55,30 @@ userSessionSchema.statics.getUserSessionList = (callback) => {
   });
 };
 
+// Limited version of sessions (just users and their tables) for table display
+userSessionSchema.statics.getUserSessionTableList = (callback) => {
+  UserSession.find({ active: true }, '_user table')
+    .populate('_user', 'photoUrl firstName lastName')
+    .exec((err, userSessions) => {
+      if (err) {
+        console.error(err);
+        return callback(err);
+      }
+      // Flatten
+      const flattenedUserSessions = userSessions.map((userSession) => {
+        return {
+          _id: userSession._id,
+          _user: userSession._user ? userSession._user._id : undefined,
+          photoUrl: userSession._user ? userSession._user.photoUrl : undefined,
+          firstName: userSession._user ? userSession._user.firstName : undefined,
+          lastName: userSession._user ? userSession._user.lastName : undefined,
+          table: userSession.table
+        }
+      });
+      return callback(null, flattenedUserSessions);
+  });
+};
+
 userSessionSchema.statics.updateUserSessionTable = (data, sessionId, callback) => {
   UserSession.findOneAndUpdate({
     _id: sessionId

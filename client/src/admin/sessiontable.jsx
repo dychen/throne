@@ -3,15 +3,13 @@ import Reactable from 'reactable';
 import moment from 'moment';
 import 'whatwg-fetch';
 
+import {TABLES} from '../constants.jsx';
 import {AdminTable} from './table.jsx';
 
 const transformAPIData = (d) => {
   d.startTime = d.startTime ? moment(d.startTime).format('YYYY-MM-DD HH:mm'): '';
   d.endTime = d.endTime ? moment(d.endTime).format('YYYY-MM-DD HH:mm') : '';
 };
-
-const TABLES = ['None', 'Table 1', 'Table 2', 'Table 3', 'Table 4', 'Table 5',
-                'Table 6', 'Table 7', 'Table 8'];
 
 class AdminSessionTable extends React.Component {
   constructor(props) {
@@ -242,4 +240,4 @@ class AdminSessionTable extends React.Component {
   }
 }
 
-export {AdminSessionTable, TABLES};
+export {AdminSessionTable};
