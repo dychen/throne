@@ -6,10 +6,16 @@ global.__ROOT_DIR = __dirname;
 
 const loadServer = () => {
 
-  const express    = require('express');
-  const bodyParser = require('body-parser');
-  const forceSSL   = require('express-force-ssl');
-  const mongoose   = require('mongoose');
+  const express      = require('express');
+  const session      = require('express-session');
+  const passport     = require('passport');
+  const cookieParser = require('cookie-parser')
+  const bodyParser   = require('body-parser');
+  const forceSSL     = require('express-force-ssl');
+  const mongoose     = require('mongoose');
+  const mongoStore   = require('connect-mongo')(session);
+  const auth         = require(__ROOT_DIR + '/server/auth.js');
+
   mongoose.connect(process.env.MONGO_URL);
   console.log('Connected to Mongo database at', process.env.MONGO_URL);
 
@@ -29,21 +35,24 @@ const loadServer = () => {
   }
 
   // Initialize passport auth and sessions
-  /*
-  require('./server/auth/google')(passport);
-  app.use(express.bodyParser());
-  app.use(express.cookieParser(process.env.SESSION_SECRET));
-  app.use(express.session(sessionParams));
-  app.use(flash());
-
+  const SESSION_PARAMS = {
+    cookie: {
+      path: '/',
+      maxAge: 3600000 * 24 * 60 // 60 day expiration
+    },
+    secret: process.env.SESSION_SECRET,
+    // Initialize a separate DB connection
+    store: new mongoStore({ url: process.env.MONGO_URL })
+  };
+  auth.googleOAuth(passport);
+  app.use(cookieParser(process.env.SESSION_SECRET));
+  app.use(session(SESSION_PARAMS));
   app.use(passport.initialize());
   app.use(passport.session());
-  require('./server/routes')(app, passport);
-  */
 
   // Routes
   app.use(bodyParser.json());
-  require(__ROOT_DIR + '/server/routes.js')(app, express);
+  require(__ROOT_DIR + '/server/routes.js')(app, passport, express);
   app.set('port', process.env.PORT || 3334);
 
   app.listen(app.get('port'), function() {

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
+import {Link, NavLink} from 'react-router-dom';
 import Immutable from 'immutable';
 import 'whatwg-fetch';
 
@@ -10,24 +10,32 @@ class WebsiteHeader extends React.Component {
     return (
       <div className="thrn-website-header">
         <div className="thrn-header-desktop">
-          <Link to="/home" className="header-link">HOME</Link>
-          <Link to="/register" className="header-link">REGISTER</Link>
-          <Link to="/about" className="header-link">ABOUT</Link>
-          <Link to="/admin" className="header-link">ADMIN</Link>
+          <NavLink to="/home" className="header-link" activeClassName="active">
+            HOME
+          </NavLink>
+          <NavLink to="/register" className="header-link" activeClassName="active">
+            REGISTER
+          </NavLink>
+          <NavLink to="/about" className="header-link" activeClassName="active">
+            ABOUT
+          </NavLink>
+          <NavLink to="/admin" className="header-link" activeClassName="active">
+            ADMIN
+          </NavLink>
         </div>
         <div className="thrn-header-mobile">
-          <Link to="/home" className="header-link">
+          <NavLink to="/home" className="header-link" activeClassName="active">
             <i className="ion-home" />
-          </Link>
-          <Link to="/register" className="header-link">
+          </NavLink>
+          <NavLink to="/register" className="header-link" activeClassName="active">
             <i className="ion-person-add" />
-          </Link>
-          <Link to="/about" className="header-link">
+          </NavLink>
+          <NavLink to="/about" className="header-link" activeClassName="active">
             <i className="ion-information-circled" />
-          </Link>
-          <Link to="/admin" className="header-link">
+          </NavLink>
+          <NavLink to="/admin" className="header-link" activeClassName="active">
             <i className="ion-log-in" />
-          </Link>
+          </NavLink>
         </div>
       </div>
     );
@@ -65,31 +73,6 @@ class WebsiteHome extends React.Component {
               Register
             </div>
           </Link>
-        </div>
-      </WebsitePage>
-    );
-  }
-}
-
-/* UNUSED */
-class WebsiteLogin extends React.Component {
-  render() {
-    return (
-      <WebsitePage>
-        <div className="thrn-website-box">
-          <span className="thrn-input-header">
-            Enter phone number
-          </span>
-          <input className="thrn-input"
-                 placeholder="XXX-XXX-XXXX"/>
-          <div className="thrn-button">
-            Send code via text
-          </div>
-          <span className="thrn-input-header">
-            Enter code
-          </span>
-          <input className="thrn-input"
-                 placeholder="XXXXXX"/>
         </div>
       </WebsitePage>
     );
@@ -375,5 +358,22 @@ class WebsiteAbout extends React.Component {
   }
 }
 
-export {WebsitePage, WebsiteHeader, WebsiteHome, WebsiteLogin, WebsiteRegister,
-        WebsiteAbout};
+class WebsiteAdmin extends React.Component {
+  render() {
+    return (
+      <WebsitePage>
+        <div className="thrn-website-box">
+          <a href="/auth/google">
+            <div className="thrn-button">
+              Login
+              <i className="ion-social-google thrn-button-text-icon" />
+            </div>
+          </a>
+        </div>
+      </WebsitePage>
+    );
+  }
+}
+
+export {WebsitePage, WebsiteHeader, WebsiteHome, WebsiteRegister, WebsiteAbout,
+        WebsiteAdmin};

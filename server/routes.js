@@ -3,7 +3,16 @@ const User = require(__ROOT_DIR + '/server/models/User.js');
 const UserSession = require(__ROOT_DIR + '/server/models/UserSession.js');
 const UserPayment = require(__ROOT_DIR + '/server/models/UserPayment.js');
 
-module.exports = (app, express) => {
+const isAdmin = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    next();
+  }
+  else {
+    res.redirect('/admin');
+  }
+};
+
+module.exports = (app, passport, express) => {
   app.post('/auth/v1/register', (req, res) => {
     User.registerUser(req.body, (err, user) => {
       if (err)
@@ -29,19 +38,33 @@ module.exports = (app, express) => {
     }
   });
 
-  app.get('/auth/v1/login', (req, res) => {
-    res.send(data);
-  });
+  /* Auth routes */
 
-  app.get('/auth/v1/logout', (req, res) => {
-    res.send(data);
-  });
+  // Auth
+  app.get('/auth/google',
+          passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+  app.get('/auth/google/callback',
+          passport.authenticate('google', {
+            successRedirect: '/admin/users',
+            failureRedirect: '/auth/google/failure'
+          }));
+
+  app.get('/auth/google/failure', (req, res) => {
+            req.logout();
+            res.redirect('/admin');
+          });
+
+  app.get('/logout', isAdmin, (req, res) => {
+            req.logout();
+            res.redirect('/');
+          });
 
   /* API routes */
 
   /* Users */
 
-  app.get('/api/v1/users', (req, res) => {
+  app.get('/api/v1/users', isAdmin, (req, res) => {
     User.getUserList((err, users) => {
       if (err)
         return res.status(400).send({ error: err });
@@ -50,7 +73,7 @@ module.exports = (app, express) => {
     });
   });
 
-  app.get('/api/v1/users/autocomplete', (req, res) => {
+  app.get('/api/v1/users/autocomplete', isAdmin, (req, res) => {
     User.getUserAutocompleteList((err, users) => {
       if (err)
         return res.status(400).send({ error: err });
@@ -59,7 +82,7 @@ module.exports = (app, express) => {
     });
   });
 
-  app.post('/api/v1/users', (req, res) => {
+  app.post('/api/v1/users', isAdmin, (req, res) => {
     User.createUser(req.body, (err, users) => {
       if (err)
         return res.status(400).send({ error: err });
@@ -68,7 +91,7 @@ module.exports = (app, express) => {
     });
   });
 
-  app.post('/api/v1/users/:userId', (req, res) => {
+  app.post('/api/v1/users/:userId', isAdmin, (req, res) => {
     User.updateUser(req.body, req.params.userId, (err, users) => {
       if (err)
         return res.status(400).send({ error: err });
@@ -77,7 +100,7 @@ module.exports = (app, express) => {
     });
   });
 
-  app.delete('/api/v1/users/:userId', (req, res) => {
+  app.delete('/api/v1/users/:userId', isAdmin, (req, res) => {
     User.deleteUser(req.params.userId, (err, users) => {
       if (err)
         return res.status(400).send({ error: err });
@@ -88,7 +111,7 @@ module.exports = (app, express) => {
 
   /* Sessions */
 
-  app.get('/api/v1/sessions', (req, res) => {
+  app.get('/api/v1/sessions', isAdmin, (req, res) => {
     UserSession.getUserSessionList((err, userSessions) => {
       if (err)
         return res.status(400).send({ error: err });
@@ -97,7 +120,7 @@ module.exports = (app, express) => {
     });
   });
 
-  app.post('/api/v1/sessions/start/:userId', (req, res) => {
+  app.post('/api/v1/sessions/start/:userId', isAdmin, (req, res) => {
     User.startSession(req.params.userId, (err, userSessions) => {
       if (err)
         return res.status(400).send({ error: err });
@@ -106,7 +129,7 @@ module.exports = (app, express) => {
     });
   });
 
-  app.post('/api/v1/sessions/end/:sessionId', (req, res) => {
+  app.post('/api/v1/sessions/end/:sessionId', isAdmin, (req, res) => {
     User.endSession(req.params.sessionId, (err, userSessions) => {
       if (err)
         return res.status(400).send({ error: err });
@@ -115,7 +138,7 @@ module.exports = (app, express) => {
     });
   });
 
-  app.post('/api/v1/sessions/tables/:sessionId', (req, res) => {
+  app.post('/api/v1/sessions/tables/:sessionId', isAdmin, (req, res) => {
     UserSession.updateUserSessionTable(req.body, req.params.sessionId,
                                        (err, userSessions) => {
       if (err)
@@ -127,7 +150,7 @@ module.exports = (app, express) => {
 
   /* Payments */
 
-  app.get('/api/v1/payments', (req, res) => {
+  app.get('/api/v1/payments', isAdmin, (req, res) => {
     UserPayment.getUserPaymentList((err, userPayments) => {
       if (err)
         return res.status(400).send({ error: err });
@@ -136,7 +159,7 @@ module.exports = (app, express) => {
     });
   });
 
-  app.post('/api/v1/payments', (req, res) => {
+  app.post('/api/v1/payments', isAdmin, (req, res) => {
     UserPayment.createUserPayment(req.body, (err, userPayments) => {
       if (err)
         return res.status(400).send({ error: err });
@@ -145,7 +168,7 @@ module.exports = (app, express) => {
     });
   });
 
-  app.post('/api/v1/payments/:paymentId', (req, res) => {
+  app.post('/api/v1/payments/:paymentId', isAdmin, (req, res) => {
     UserPayment.updateUserPayment(req.body, req.params.paymentId,
                                   (err, userPayments) => {
       if (err)
@@ -155,7 +178,7 @@ module.exports = (app, express) => {
     });
   });
 
-  app.delete('/api/v1/payments/:paymentId', (req, res) => {
+  app.delete('/api/v1/payments/:paymentId', isAdmin, (req, res) => {
     UserPayment.deleteUserPayment(req.params.paymentId,
                                   (err, userPayments) => {
       if (err)

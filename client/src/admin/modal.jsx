@@ -1,6 +1,7 @@
 import React from 'react';
 import Immutable from 'immutable';
 import Autosuggest from 'react-autosuggest';
+import 'whatwg-fetch';
 
 import './modal.scss';
 
@@ -43,7 +44,8 @@ class UserField extends React.Component {
 
   getUserAutocompleteList() {
     fetch(`${SERVER_URL}/api/v1/users/autocomplete`, {
-      method: 'GET'
+      method: 'GET',
+      credentials: 'include'
     })
     .then(function(response) {
       if (response.ok) {

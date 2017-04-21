@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
+import {NavLink} from 'react-router-dom';
 
 import './sidenav.scss';
 
@@ -30,40 +30,48 @@ class AdminSidenav extends React.Component {
             <i className="ion-navicon nav-hamburger" />
             <span className="minimized-sidenav-hidden">Throne</span>
           </div>
-          <Link to="/admin/users">
+          <NavLink to="/admin/users" activeClassName="active">
             <div className="thrn-sidenav-item link">
               <i className="ion-person-stalker" />
               <span className="minimized-sidenav-hidden">
                 Users
               </span>
             </div>
-          </Link>
-          <Link to="/admin/sessions">
+          </NavLink>
+          <NavLink to="/admin/sessions" activeClassName="active">
             <div className="thrn-sidenav-item link">
               <i className="ion-clock" />
               <span className="minimized-sidenav-hidden">
                 Sessions
               </span>
             </div>
-          </Link>
-          <Link to="/admin/tables">
+          </NavLink>
+          <NavLink to="/admin/tables" activeClassName="active">
             <div className="thrn-sidenav-item link">
               <i className="ion-earth" />
               <span className="minimized-sidenav-hidden">
                 Tables
               </span>
             </div>
-          </Link>
-          <Link to="/admin/payments">
+          </NavLink>
+          <NavLink to="/admin/payments" activeClassName="active">
             <div className="thrn-sidenav-item link">
               <i className="ion-cash" />
               <span className="minimized-sidenav-hidden">
                 Payments
               </span>
             </div>
-          </Link>
+          </NavLink>
         </div>
         <div className="thrn-sidenav-bottom">
+          <a href="/logout">
+            <div className="thrn-sidenav-item link">
+              <i className="ion-log-out" />
+              <span className="minimized-sidenav-hidden">
+                Logout
+              </span>
+            </div>
+          </a>
         </div>
       </div>
     );

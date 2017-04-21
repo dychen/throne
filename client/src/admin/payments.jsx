@@ -97,7 +97,8 @@ class AdminPayments extends React.Component {
 
   getPaymentList() {
     fetch(this.API_URL, {
-      method: 'GET'
+      method: 'GET',
+      credentials: 'include'
     })
     .then(function(response) {
       if (response.ok) {
@@ -133,6 +134,7 @@ class AdminPayments extends React.Component {
     fetch(this.API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify(obj)
     })
     .then(function(response) {
@@ -169,6 +171,7 @@ class AdminPayments extends React.Component {
     fetch(`${this.API_URL}/${objId}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify(obj)
     })
     .then(function(response) {
@@ -203,7 +206,8 @@ class AdminPayments extends React.Component {
 
   deletePayment(objId) {
     fetch(`${this.API_URL}/${objId}`, {
-      method: 'DELETE'
+      method: 'DELETE',
+      credentials: 'include'
     })
     .then(function(response) {
       if (response.ok) {

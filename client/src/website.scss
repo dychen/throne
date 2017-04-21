@@ -72,7 +72,7 @@ $BG_IMAGE_URL: 'https://s3-us-west-1.amazonaws.com/throne-s3/images/background.p
     @include hvr-color($THRN_WHITE);
   }
 
-  a.header-link:active {
+  a.header-link.active {
     color: $THRN_WHITE;
   }
 }
@@ -109,6 +109,14 @@ $BG_IMAGE_URL: 'https://s3-us-west-1.amazonaws.com/throne-s3/images/background.p
   }
   input.thrn-input.valid {
     border-color: $THRN_GREEN;
+  }
+  .thrn-button {
+    position: relative;
+    > .thrn-button-text-icon {
+      position: absolute;
+      right: 15px;
+      font-size: 20px;
+    }
   }
 
   /* About page */

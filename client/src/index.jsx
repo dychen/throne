@@ -5,7 +5,8 @@ import {Route, BrowserRouter} from 'react-router-dom';
 import './index.scss';
 import './public/css/bootstrap.css';
 
-import {WebsiteHome, WebsiteRegister, WebsiteAbout} from './website.jsx';
+import {WebsiteHome, WebsiteRegister, WebsiteAbout,
+        WebsiteAdmin} from './website.jsx';
 import {AdminUsers} from './admin/users.jsx';
 import {AdminSessions} from './admin/sessions.jsx';
 import {AdminTables} from './admin/tables.jsx';
@@ -20,7 +21,7 @@ class App extends React.Component {
           <Route path="/home" component={WebsiteHome}/>
           <Route path="/register" component={WebsiteRegister} />
           <Route path="/about" component={WebsiteAbout} />
-          <Route exact path="/admin" component={AdminUsers} />
+          <Route exact path="/admin" component={WebsiteAdmin} />
           <Route path="/admin/users" component={AdminUsers} />
           <Route path="/admin/sessions" component={AdminSessions} />
           <Route path="/admin/tables" component={AdminTables} />

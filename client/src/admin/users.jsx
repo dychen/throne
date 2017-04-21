@@ -126,7 +126,8 @@ class AdminUsers extends React.Component {
 
   getUserList() {
     fetch(this.API_URL, {
-      method: 'GET'
+      method: 'GET',
+      credentials: 'include'
     })
     .then(function(response) {
       if (response.ok) {
@@ -162,6 +163,7 @@ class AdminUsers extends React.Component {
     fetch(this.API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify(user)
     })
     .then(function(response) {
@@ -198,6 +200,7 @@ class AdminUsers extends React.Component {
     fetch(`${this.API_URL}/${userId}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify(user)
     })
     .then(function(response) {
@@ -232,7 +235,8 @@ class AdminUsers extends React.Component {
 
   deleteUser(userId) {
     fetch(`${this.API_URL}/${userId}`, {
-      method: 'DELETE'
+      method: 'DELETE',
+      credentials: 'include'
     })
     .then(function(response) {
       if (response.ok) {
@@ -267,7 +271,8 @@ class AdminUsers extends React.Component {
   startSessionAPI(userId) {
     fetch(`${SERVER_URL}/api/v1/sessions/start/${userId}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include'
     })
     .then(function(response) {
       if (response.ok) {

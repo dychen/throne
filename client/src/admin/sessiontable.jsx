@@ -88,7 +88,8 @@ class AdminSessionTable extends React.Component {
 
   getSessionList() {
     fetch(this.API_URL, {
-      method: 'GET'
+      method: 'GET',
+      credentials: 'include'
     })
     .then(function(response) {
       if (response.ok) {
@@ -123,7 +124,8 @@ class AdminSessionTable extends React.Component {
   endSessionAPI(sessionId) {
     fetch(`${SERVER_URL}/api/v1/sessions/end/${sessionId}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include'
     })
     .then(function(response) {
       if (response.ok) {
@@ -159,6 +161,7 @@ class AdminSessionTable extends React.Component {
     fetch(`${SERVER_URL}/api/v1/sessions/tables/${sessionId}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify({ table: newTable })
     })
     .then(function(response) {
