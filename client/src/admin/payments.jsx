@@ -100,7 +100,7 @@ class AdminPayments extends React.Component {
       method: 'GET',
       credentials: 'include'
     })
-    .then(function(response) {
+    .then(response => {
       if (response.ok) {
         return response.json();
       }
@@ -137,7 +137,7 @@ class AdminPayments extends React.Component {
       credentials: 'include',
       body: JSON.stringify(obj)
     })
-    .then(function(response) {
+    .then(response => {
       if (response.ok) {
         return response.json();
       }
@@ -174,7 +174,7 @@ class AdminPayments extends React.Component {
       credentials: 'include',
       body: JSON.stringify(obj)
     })
-    .then(function(response) {
+    .then(response => {
       if (response.ok) {
         return response.json();
       }
@@ -209,7 +209,7 @@ class AdminPayments extends React.Component {
       method: 'DELETE',
       credentials: 'include'
     })
-    .then(function(response) {
+    .then(response => {
       if (response.ok) {
         return response.json();
       }

@@ -3,6 +3,8 @@
 
 $ELEMENT_WIDTH: 200px;
 $BG_IMAGE_URL: 'https://s3-us-west-1.amazonaws.com/throne-s3/images/background.png';
+$REGISTER_IMAGE_URL: 'https://s3-us-west-1.amazonaws.com/throne-s3/images/register.jpg';
+$ABOUT_IMAGE_URL: 'https://s3-us-west-1.amazonaws.com/throne-s3/images/about.jpg';
 
 .thrn-website-background {
   width: 100%;
@@ -22,6 +24,15 @@ $BG_IMAGE_URL: 'https://s3-us-west-1.amazonaws.com/throne-s3/images/background.p
   align-items: center;
   justify-content: flex-start;
   flex-direction: column;
+}
+
+.thrn-website-background.register {
+  background-image: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.6) 100%),
+                    url($REGISTER_IMAGE_URL);
+}
+.thrn-website-background.about {
+  background-image: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.6) 100%),
+                    url($ABOUT_IMAGE_URL);
 }
 
 .thrn-website-header {
@@ -58,7 +69,7 @@ $BG_IMAGE_URL: 'https://s3-us-west-1.amazonaws.com/throne-s3/images/background.p
 }
 
 .thrn-website-header {
-  //background-color: $THRN_BLACK;
+  background-color: $THRN_BLACK;
   border-bottom: 1px solid $THRN_DARK_GRAY;
 
   display: flex;
@@ -96,6 +107,12 @@ $BG_IMAGE_URL: 'https://s3-us-west-1.amazonaws.com/throne-s3/images/background.p
   // Fix for flexbox overflow behavior
   margin: auto;
 
+  .thrn-form-error {
+    font-weight: 900;
+    color: $THRN_ERROR_RED;
+    width: $ELEMENT_WIDTH;
+  }
+
   .thrn-input-header {
     color: $THRN_WHITE;
     width: $ELEMENT_WIDTH;
@@ -111,7 +128,7 @@ $BG_IMAGE_URL: 'https://s3-us-west-1.amazonaws.com/throne-s3/images/background.p
     color: $THRN_WHITE_GRAY;
   }
   input.thrn-input.invalid {
-    border-color: $THRN_RED;
+    border-color: $THRN_ERROR_RED;
   }
   input.thrn-input.valid {
     border-color: $THRN_GREEN;

@@ -32,9 +32,12 @@ const userPaymentSchema = new mongoose.Schema({
   collection: 'user_payments'
 });
 
+/*
+ * Price calculation: floor(Elapsed minutes * Price per hour / 60)
+ */
 userPaymentSchema.statics.calculateAmount = (startTime, endTime) => {
-  return Math.ceil((endTime.getTime() - startTime.getTime())
-                   / (60 * 60 * 1000)) * PRICE_PER_HOUR;
+  return Math.floor((endTime.getTime() - startTime.getTime())
+                    / (60 * 1000) * (PRICE_PER_HOUR / 60));
 };
 
 userPaymentSchema.statics.getUserPaymentList = (callback) => {

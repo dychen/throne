@@ -41,15 +41,20 @@ class AdminUsers extends React.Component {
     this.updateUser = this.updateUser.bind(this);
     this.deleteUser = this.deleteUser.bind(this);
     this.startSessionAPI = this.startSessionAPI.bind(this);
+    this.verifyUserAPI = this.verifyUserAPI.bind(this);
 
     // Table cell methods
     this.getActiveClassName = this.getActiveClassName.bind(this);
     this.getActiveButtonDisplay = this.getActiveButtonDisplay.bind(this);
     this.startSession = this.startSession.bind(this);
+    this.getUnverifiedClassName = this.getUnverifiedClassName.bind(this);
+    this.getUnverifiedButtonDisplay = this.getUnverifiedButtonDisplay.bind(this);
+    this.verifyUser = this.verifyUser.bind(this);
 
     // Constants
     this.API_URL = `${SERVER_URL}/api/v1/users`;
-    this.COLUMNS = [
+    // Active table
+    this.ACTIVE_COLUMNS = [
       { key: 'photoUrl', label: 'Photo' },
       { key: 'firstName', label: 'First Name' },
       { key: 'lastName', label: 'Last Name' },
@@ -59,17 +64,37 @@ class AdminUsers extends React.Component {
       { key: 'createdAt', label: 'Registration Date' },
       { key: 'active', label: 'Sign In' }
     ];
-    this.CLICKABLE_COLUMNS = {
+    this.ACTIVE_CLICKABLE_COLUMNS = {
       active: {
         getClassNameFromValue: this.getActiveClassName,
         getDisplayFromValue: this.getActiveButtonDisplay,
         onClick: this.startSession
       }
     };
-    this.EDITABLE_COLUMNS = this.COLUMNS.filter((c) => {
-      return !['createdAt', 'active'].includes(c.key);
+    this.ACTIVE_COLUMN_KEYS = this.ACTIVE_COLUMNS.map((c) => c.key);
+    // Unverified table
+    this.UNVERIFIED_COLUMNS = [
+      { key: 'photoUrl', label: 'Photo' },
+      { key: 'firstName', label: 'First Name' },
+      { key: 'lastName', label: 'Last Name' },
+      { key: 'email', label: 'Email' },
+      { key: 'phone', label: 'Phone Number' },
+      { key: 'referrer', label: 'Referrer' },
+      { key: 'createdAt', label: 'Registration Date' },
+      { key: 'verify', label: 'Verify' }
+    ];
+    this.UNVERIFIED_CLICKABLE_COLUMNS = {
+      verify: {
+        getClassNameFromValue: this.getUnverifiedClassName,
+        getDisplayFromValue: this.getUnverifiedButtonDisplay,
+        onClick: this.verifyUser
+      }
+    };
+    this.UNVERIFIED_COLUMN_KEYS = this.UNVERIFIED_COLUMNS.map((c) => c.key);
+
+    this.EDITABLE_COLUMNS = this.ACTIVE_COLUMNS.filter((c) => {
+      return !['createdAt', 'active', 'verify'].includes(c.key);
     });
-    this.COLUMN_KEYS = this.COLUMNS.map((c) => c.key);
 
     this.getUserList();
   }
@@ -129,7 +154,7 @@ class AdminUsers extends React.Component {
       method: 'GET',
       credentials: 'include'
     })
-    .then(function(response) {
+    .then(response => {
       if (response.ok) {
         return response.json();
       }
@@ -166,7 +191,7 @@ class AdminUsers extends React.Component {
       credentials: 'include',
       body: JSON.stringify(user)
     })
-    .then(function(response) {
+    .then(response => {
       if (response.ok) {
         return response.json();
       }
@@ -203,7 +228,7 @@ class AdminUsers extends React.Component {
       credentials: 'include',
       body: JSON.stringify(user)
     })
-    .then(function(response) {
+    .then(response => {
       if (response.ok) {
         return response.json();
       }
@@ -238,7 +263,7 @@ class AdminUsers extends React.Component {
       method: 'DELETE',
       credentials: 'include'
     })
-    .then(function(response) {
+    .then(response => {
       if (response.ok) {
         return response.json();
       }
@@ -271,10 +296,44 @@ class AdminUsers extends React.Component {
   startSessionAPI(userId) {
     fetch(`${SERVER_URL}/api/v1/sessions/start/${userId}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       credentials: 'include'
     })
-    .then(function(response) {
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+      else {
+        return response.json().then(json => {
+          console.error(json);
+          throw new Error(json);
+        });
+      }
+    })
+    /*
+     * Response format: {
+     *   data: [User list]
+     * }
+     */
+    .then(json => {
+      // Success
+      console.log('Success', json);
+      // Transform dates
+      json.data.forEach(transformAPIData);
+      this.setState({ users: json.data });
+      return json;
+    })
+    .catch(err => {
+      // Failure
+      return err;
+    });
+  }
+
+  verifyUserAPI(userId) {
+    fetch(`${SERVER_URL}/api/v1/users/${userId}/verify`, {
+      method: 'POST',
+      credentials: 'include'
+    })
+    .then(response => {
       if (response.ok) {
         return response.json();
       }
@@ -322,7 +381,42 @@ class AdminUsers extends React.Component {
     }
   }
 
+  getUnverifiedClassName(value) {
+    return 'green';
+  }
+
+  getUnverifiedButtonDisplay(value) {
+    return 'Verify';
+  }
+
+  verifyUser(e, value, user) {
+    e.stopPropagation();
+    this.verifyUserAPI(user._id);
+  }
+
+
   render() {
+    let adminTable;
+    if (this.state.view === 'unverified') {
+      adminTable = (
+        <AdminTable INITIAL_SORT={{ column: 'createdAt', direction: -1 }}
+                    COLUMNS={this.UNVERIFIED_COLUMNS}
+                    CLICKABLE_COLUMNS={this.UNVERIFIED_CLICKABLE_COLUMNS}
+                    COLUMN_KEYS={this.UNVERIFIED_COLUMN_KEYS}
+                    data={this._filterUsers(this.state.users)}
+                    onRowClick={this.showUpdateModal} />
+      );
+    }
+    else {
+      adminTable = (
+        <AdminTable INITIAL_SORT={{ column: 'firstName', direction: 1 }}
+                    COLUMNS={this.ACTIVE_COLUMNS}
+                    CLICKABLE_COLUMNS={this.ACTIVE_CLICKABLE_COLUMNS}
+                    COLUMN_KEYS={this.ACTIVE_COLUMN_KEYS}
+                    data={this._filterUsers(this.state.users)}
+                    onRowClick={this.showUpdateModal} />
+      );
+    }
     return (
       <AdminPage>
         <div className="thrn-nav-tab-container">
@@ -340,12 +434,7 @@ class AdminUsers extends React.Component {
               Create User
             </div>
           </div>
-          <AdminTable INITIAL_SORT={{ column: 'firstName', direction: 1 }}
-                      COLUMNS={this.COLUMNS}
-                      CLICKABLE_COLUMNS={this.CLICKABLE_COLUMNS}
-                      COLUMN_KEYS={this.COLUMN_KEYS}
-                      data={this._filterUsers(this.state.users)}
-                      onRowClick={this.showUpdateModal} />
+          {adminTable}
           <AdminModal FIELDS={this.EDITABLE_COLUMNS}
                       title={this.state.modal.title}
                       data={this.state.modal.data}

@@ -89,7 +89,7 @@ class AdminSessionTable extends React.Component {
       method: 'GET',
       credentials: 'include'
     })
-    .then(function(response) {
+    .then(response => {
       if (response.ok) {
         return response.json();
       }
@@ -125,7 +125,7 @@ class AdminSessionTable extends React.Component {
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include'
     })
-    .then(function(response) {
+    .then(response => {
       if (response.ok) {
         return response.json();
       }
@@ -162,7 +162,7 @@ class AdminSessionTable extends React.Component {
       credentials: 'include',
       body: JSON.stringify({ table: newTable })
     })
-    .then(function(response) {
+    .then(response => {
       if (response.ok) {
         return response.json();
       }

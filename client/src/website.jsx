@@ -12,31 +12,25 @@ class WebsiteHeader extends React.Component {
     return (
       <div className="thrn-website-header">
         <div className="thrn-header-desktop">
-          <NavLink to="/home" className="header-link" activeClassName="active">
-            HOME
-          </NavLink>
           <NavLink to="/register" className="header-link" activeClassName="active">
             REGISTER
+          </NavLink>
+          <NavLink to="/tables" className="header-link" activeClassName="active">
+            TABLES
           </NavLink>
           <NavLink to="/about" className="header-link" activeClassName="active">
             ABOUT
           </NavLink>
-          <NavLink to="/admin" className="header-link" activeClassName="active">
-            ADMIN
-          </NavLink>
         </div>
         <div className="thrn-header-mobile">
-          <NavLink to="/home" className="header-link" activeClassName="active">
-            <i className="ion-home" />
-          </NavLink>
           <NavLink to="/register" className="header-link" activeClassName="active">
             <i className="ion-person-add" />
           </NavLink>
+          <NavLink to="/tables" className="header-link" activeClassName="active">
+            <i className="ion-earth" />
+          </NavLink>
           <NavLink to="/about" className="header-link" activeClassName="active">
             <i className="ion-information-circled" />
-          </NavLink>
-          <NavLink to="/admin" className="header-link" activeClassName="active">
-            <i className="ion-log-in" />
           </NavLink>
         </div>
       </div>
@@ -46,8 +40,11 @@ class WebsiteHeader extends React.Component {
 
 class WebsitePage extends React.Component {
   render() {
+    const className = (this.props.backgroundClass
+                       ? `thrn-website-background ${this.props.backgroundClass}`
+                       : 'thrn-website-background');
     return (
-      <div className="thrn-website-background">
+      <div className={className}>
         <WebsiteHeader />
         <div className="thrn-website-body">
           {this.props.children}
@@ -80,7 +77,7 @@ class CardTable extends React.Component {
   }
 }
 
-class WebsiteHome extends React.Component {
+class WebsiteTables extends React.Component {
   constructor(props) {
     super(props);
 
@@ -114,7 +111,7 @@ class WebsiteHome extends React.Component {
     fetch(this.API_URL, {
       method: 'GET'
     })
-    .then(function(response) {
+    .then(response => {
       if (response.ok) {
         return response.json();
       }
@@ -174,9 +171,9 @@ class WebsiteRegister extends React.Component {
         lastName: null,
         email: null,
         phone: null,
-        creditCard: null,
         referrer: null
       },
+      errorMsg: '',
       userId: '',
       verificationCode: '',
       page: 'register',
@@ -185,10 +182,7 @@ class WebsiteRegister extends React.Component {
 
     this.handleInput = this.handleInput.bind(this);
     this.handleVerificationInput = this.handleVerificationInput.bind(this);
-    this.goToVerifyPage = this.goToVerifyPage.bind(this);
-    this.goToRegistrationPage = this.goToRegistrationPage.bind(this);
     this.submitRegistration = this.submitRegistration.bind(this);
-    this.submitVerification = this.submitVerification.bind(this);
 
     this._getProfileInputCSS = this._getProfileInputCSS.bind(this);
   }
@@ -203,27 +197,20 @@ class WebsiteRegister extends React.Component {
     this.setState({ verificationCode: e.currentTarget.value });
   }
 
-  goToVerifyPage(e) {
-    this.setState({ page: 'verify' });
-  }
-
-  goToRegistrationPage(e) {
-    this.setState({ page: 'register' });
-  }
-
   submitRegistration(e) {
     fetch(`${SERVER_URL}/auth/v1/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(this.state.profile)
     })
-    .then(function(response) {
+    .then(response => {
       if (response.ok) {
         return response.json();
       }
       else {
         return response.json().then(json => {
           console.error(json);
+          this.setState({ errorMsg: json.error });
           throw new Error(json);
         });
       }
@@ -233,38 +220,6 @@ class WebsiteRegister extends React.Component {
      *   data: [User object]
      * }
      */
-    .then(json => {
-      // Success
-      console.log('Success', json);
-      this.setState({ page: 'verify', userId: json.data._id });
-      return json;
-    })
-    .catch(err => {
-      // Failure
-      return err;
-    });
-  }
-
-  submitVerification(e) {
-    fetch(`${SERVER_URL}/auth/v1/verify`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        userId: this.state.userId,
-        code: this.state.verificationCode
-      })
-    })
-    .then(function(response) {
-      if (response.ok) {
-        return response.json();
-      }
-      else {
-        return response.json().then(json => {
-          console.error(json);
-          throw new Error(json);
-        });
-      }
-    })
     .then(json => {
       // Success
       console.log('Success', json);
@@ -278,52 +233,39 @@ class WebsiteRegister extends React.Component {
   }
 
   _getProfileInputCSS(field) {
-    if (this.state.profile[field] === null)
+    if (this.state.profile[field] === null) {
       return 'thrn-input';
-    else if (field === 'phone' && this.state.profile[field].length !== 10)
+    }
+    else if (field === 'phone') {
+      if (this.state.profile[field].length !== 12)
+        return 'thrn-input invalid';
+      else {
+        const phoneNumberArr = this.state.profile[field].split('-');
+        if (phoneNumberArr.length === 3 && phoneNumberArr[0].length == 3
+            && phoneNumberArr[1].length == 3 && phoneNumberArr[2].length === 4)
+          return 'thrn-input valid';
+        else
+          return 'thrn-input invalid';
+      }
+    }
+    else if (field === 'email') {
+      const emailStr = this.state.profile[field];
+      if (emailStr.indexOf('@') > -1 && emailStr.indexOf('.com') > -1) {
+        return 'thrn-input valid';
+      }
       return 'thrn-input invalid';
-    else if (this.state.profile[field])
+    }
+    else if (this.state.profile[field]) {
       return 'thrn-input valid';
-    else
+    }
+    else {
       return 'thrn-input invalid';
+    }
   }
 
   render() {
     let body;
     switch(this.state.page) {
-      case 'verify':
-        body = (
-          <div className="thrn-website-box">
-            <div className="thrn-website-text-group element-aligned">
-              A text message with the code has been sent to
-              &nbsp;{this.state.profile.phoneNumber}. Enter it here.
-            </div>
-            <input className="thrn-input"
-                   placeholder="Your verification code"
-                   value={this.state.verificationCode}
-                   onChange={this.handleVerificationInput} />
-            <div className="thrn-button"
-                 onClick={this.submitVerification}>
-              Submit
-            </div>
-            <div className="thrn-website-text-group">
-              <span className="text-group-clickable"
-                    onClick={this.submitVerification}>
-                Resend verification code
-              </span>
-            </div>
-            <div className="thrn-website-text-group">
-              <span className="text-group-clickable"
-                    onClick={this.goToRegistrationPage}>
-                Go back
-              </span>
-            </div>
-            <div className="thrn-website-text-group">
-              <span></span>
-            </div>
-          </div>
-        );
-        break;
       case 'done':
         body = (
           <div className="thrn-website-box">
@@ -337,8 +279,11 @@ class WebsiteRegister extends React.Component {
       default:
         body = (
           <div className="thrn-website-box">
+            <span className="thrn-form-error">
+              {this.state.errorMsg}
+            </span>
             <span className="thrn-input-header">
-              First Name
+              First Name**
             </span>
             <input className={this._getProfileInputCSS('firstName')}
                    placeholder="Your first name"
@@ -346,7 +291,7 @@ class WebsiteRegister extends React.Component {
                    value={this.state.profile.firstName}
                    onChange={this.handleInput} />
             <span className="thrn-input-header">
-              Last Name
+              Last Name**
             </span>
             <input className={this._getProfileInputCSS('lastName')}
                    placeholder="Your last name"
@@ -354,7 +299,7 @@ class WebsiteRegister extends React.Component {
                    value={this.state.profile.lastName}
                    onChange={this.handleInput} />
             <span className="thrn-input-header">
-              Email
+              Email**
             </span>
             <input className={this._getProfileInputCSS('email')}
                    placeholder="Your email address"
@@ -362,19 +307,11 @@ class WebsiteRegister extends React.Component {
                    value={this.state.profile.email}
                    onChange={this.handleInput} />
             <span className="thrn-input-header">
-              Phone Number
+              Phone Number**
             </span>
             <input className={this._getProfileInputCSS('phone')}
                    placeholder="XXX-XXX-XXXX"
                    name="phone"
-                   onChange={this.handleInput} />
-            <span className="thrn-input-header">
-              Credit Card
-            </span>
-            <input className={this._getProfileInputCSS('creditCard')}
-                   placeholder="XXXX-XXXX-XXXX-XXXX"
-                   name="creditCard"
-                   value={this.state.profile.creditCard}
                    onChange={this.handleInput} />
             <span className="thrn-input-header">
               Referrer
@@ -393,7 +330,7 @@ class WebsiteRegister extends React.Component {
         break;
     }
     return (
-      <WebsitePage>
+      <WebsitePage backgroundClass="register">
         {body}
       </WebsitePage>
     )
@@ -403,21 +340,24 @@ class WebsiteRegister extends React.Component {
 class WebsiteAbout extends React.Component {
   render() {
     return (
-      <WebsitePage>
+      <WebsitePage backgroundClass="about">
         <div className="thrn-website-box">
+          <div className="thrn-website-text-group">
+            <span className="text-group-bold">Members</span>
+            <span>New members must be referred by current members.</span>
+          </div>
           <div className="thrn-website-text-group">
             <span className="text-group-bold">Address</span>
             <span>1015 E Braker Ln.</span>
             <span>Ste. 4</span>
             <span>Austin, TX 78753</span>
 
-            <span>Please park around back</span>
+            <span>Please park around back. Entrance is around back.</span>
           </div>
           <div className="thrn-website-text-group">
             <span className="text-group-bold">Hours</span>
-            <span>Monday-Friday: 6pm-3am</span>
-            <span>Saturday: 2pm-4am</span>
-            <span>Sunday: 2pm-2am</span>
+            <span>Monday-Friday: 6pm-4am</span>
+            <span>Saturday-Sunday: 2pm-4am</span>
           </div>
           <div className="thrn-website-text-group">
             <span className="text-group-bold">Contact</span>
@@ -434,6 +374,10 @@ class WebsiteAbout extends React.Component {
               <a className="text-group-icon" target="_blank"
                  href="https://www.youtube.com/channel/UCYKW2vgq_1br6SvgxvROYbw">
                 <i className="ion-social-youtube" />
+              </a>
+              <a className="text-group-icon" target="_blank"
+                 href="https://www.instagram.com/thronepoker/">
+                <i className="ion-social-instagram" />
               </a>
             </span>
           </div>
@@ -460,5 +404,5 @@ class WebsiteAdmin extends React.Component {
   }
 }
 
-export {WebsitePage, WebsiteHeader, WebsiteHome, WebsiteRegister, WebsiteAbout,
+export {WebsitePage, WebsiteHeader, WebsiteTables, WebsiteRegister, WebsiteAbout,
         WebsiteAdmin};

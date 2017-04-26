@@ -216,7 +216,7 @@ class AdminTable extends React.Component {
                        columns={this.props.COLUMNS}
                        itemsPerPage={20} pageButtonLimit={5}
                        sortable={this.props.COLUMN_KEYS}
-                       defaultSort={{column: 'firstName'}}
+                       defaultSort={this.props.INITIAL_SORT}
                        onSort={this.updateSortState}
                        filterable={this.props.COLUMN_KEYS}>
         <Reactable.Thead>

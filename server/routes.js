@@ -22,6 +22,8 @@ module.exports = (app, passport, express) => {
     });
   });
 
+  /* OLD/UNUSED: Registration process via Twilio/Authy */
+  /*
   app.post('/auth/v1/verify', (req, res) => {
     if (req.body.userId && req.body.code) {
       User.verifyUser(req.body.userId, req.body.code, (err, user) => {
@@ -37,6 +39,7 @@ module.exports = (app, passport, express) => {
       });
     }
   });
+  */
 
   /* Auth routes */
 
@@ -102,6 +105,15 @@ module.exports = (app, passport, express) => {
 
   app.delete('/api/v1/users/:userId', isAdmin, (req, res) => {
     User.deleteUser(req.params.userId, (err, users) => {
+      if (err)
+        return res.status(400).send({ error: err });
+      else
+        return res.send({ data: users });
+    });
+  });
+
+  app.post('/api/v1/users/:userId/verify', (req, res) => {
+    User.verifyUser(req.params.userId, (err, users) => {
       if (err)
         return res.status(400).send({ error: err });
       else

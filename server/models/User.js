@@ -25,6 +25,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: DEFAULT_PHOTO_URL
   },
+  // Unused (added for Twilio/Authy integration)
   countryCode: {
     type: String,
     default: '1'
@@ -44,14 +45,11 @@ const userSchema = new mongoose.Schema({
   active: {
     type: Boolean,
     required: true,
-    default: true
-  },
-  creditCard: {
-    type: String
+    default: false
   },
   referrer: {
     type: String,
-    default: 'None'
+    default: 'Robert Paape'
   },
   createdAt: {
     type: Date,
@@ -71,6 +69,8 @@ const userSchema = new mongoose.Schema({
 
 /* Registration methods */
 
+/* OLD/UNUSED: Registration process via Twilio/Authy */
+/*
 userSchema.statics.registerUser = (data, callback) => {
   if (data.firstName && data.lastName && data.email && data.phone) {
     User.findOneAndUpdate({
@@ -83,7 +83,6 @@ userSchema.statics.registerUser = (data, callback) => {
       countryCode: '1', // Default to US
       verified: false,
       active: false,
-      creditCard: data.creditCard,
       referrer: data.referrer
     }, {
       upsert: true,
@@ -112,6 +111,44 @@ userSchema.statics.verifyUser = function(userId, code, callback) {
     return auth.verifyAuthyToken(user, code, callback);
   });
 };
+*/
+
+userSchema.statics.registerUser = (data, callback) => {
+  if (data.firstName && data.lastName && data.email && data.phone) {
+    User.create({
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      phone: data.phone,
+      countryCode: '1', // Default to US
+      referrer: data.referrer,
+      verified: false,
+      active: false,
+      deleted: false,
+      createdAt: new Date()
+    }, (err, user) => {
+      if (err) {
+        console.error(err);
+        return callback(err);
+      }
+      else {
+        return callback(null, user);
+      }
+    });
+  }
+  else {
+    const missingFields = [];
+    if (!data.firstName)
+      missingFields.push('First Name');
+    if (!data.lastName)
+      missingFields.push('Last Name');
+    if (!data.email)
+      missingFields.push('Email');
+    if (!data.phone)
+      missingFields.push('Phone Number');
+    callback('Missing required fields: ' + missingFields.join(', '));
+  }
+};
 
 /* Admin methods */
 
@@ -122,12 +159,12 @@ userSchema.statics.getUserList = (callback) => {
     { deleted: false },
     'photoUrl firstName lastName email phone referrer createdAt verified active',
     (err, users) => {
-    if (err) {
-      console.error(err);
-      return callback(err);
-    }
-    return callback(null, users);
-  });
+      if (err) {
+        console.error(err);
+        return callback(err);
+      }
+      return callback(null, users);
+    });
 };
 
 // For autocomplete
@@ -196,6 +233,25 @@ userSchema.statics.deleteUser = (userId, callback) => {
     _id: userId
   }, {
     deleted: true
+  }, {
+    upsert: false,
+    new: true
+  }, (err, user) => {
+    if (err) {
+      console.error(err);
+      return callback(err);
+    }
+    else {
+      return User.getUserList(callback);
+    }
+  });
+};
+
+userSchema.statics.verifyUser = (userId, callback) => {
+  User.findOneAndUpdate({
+    _id: userId
+  }, {
+    verified: true
   }, {
     upsert: false,
     new: true

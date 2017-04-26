@@ -47,7 +47,7 @@ class UserField extends React.Component {
       method: 'GET',
       credentials: 'include'
     })
-    .then(function(response) {
+    .then(response => {
       if (response.ok) {
         return response.json();
       }
