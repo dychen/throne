@@ -2,6 +2,7 @@ const path = require('path');
 const User = require(__ROOT_DIR + '/server/models/User.js');
 const UserSession = require(__ROOT_DIR + '/server/models/UserSession.js');
 const UserPayment = require(__ROOT_DIR + '/server/models/UserPayment.js');
+const UserTable = require(__ROOT_DIR + '/server/models/UserTable.js');
 
 const isAdmin = (req, res, next) => {
   if (req.isAuthenticated()) {
@@ -132,17 +133,6 @@ module.exports = (app, passport, express) => {
     });
   });
 
-  // Limited version of sessions (just users and their tables) for table
-  // display. Unauthenticated because it's shown on the home page.
-  app.get('/api/v1/sessions/tables', (req, res) => {
-    UserSession.getUserSessionTableList((err, userSessions) => {
-      if (err)
-        return res.status(400).send({ error: err });
-      else
-        return res.send({ data: userSessions });
-    });
-  });
-
   app.post('/api/v1/sessions/start/:userId', isAdmin, (req, res) => {
     User.startSession(req.params.userId, (err, userSessions) => {
       if (err)
@@ -208,6 +198,68 @@ module.exports = (app, passport, express) => {
         return res.status(400).send({ error: err });
       else
         return res.send({ data: userPayments });
+    });
+  });
+
+  /* Tables */
+
+  app.get('/api/v1/tables', isAdmin, (req, res) => {
+    UserTable.getUserTableList((err, userTables) => {
+      if (err)
+        return res.status(400).send({ error: err });
+      else
+        return res.send({ data: userTables });
+    });
+  });
+
+  app.post('/api/v1/tables', isAdmin, (req, res) => {
+    UserTable.createUserTable(req.body, (err, userTables) => {
+      if (err)
+        return res.status(400).send({ error: err });
+      else
+        return res.send({ data: userTables });
+    });
+  });
+
+  app.post('/api/v1/tables/:tableId', isAdmin, (req, res) => {
+    UserTable.updateUserTable(req.body, req.params.tableId,
+                              (err, userTables) => {
+      if (err)
+        return res.status(400).send({ error: err });
+      else
+        return res.send({ data: userTables });
+    });
+  });
+
+  app.delete('/api/v1/tables/:tableId', isAdmin, (req, res) => {
+    UserTable.deleteUserTable(req.params.tableId,
+                              (err, userTables) => {
+      if (err)
+        return res.status(400).send({ error: err });
+      else
+        return res.send({ data: userTables });
+    });
+  });
+
+  /* Public website */
+
+  // Limited version of sessions (just users and their tables) for table
+  // display. Unauthenticated because it's shown on the home page.
+  app.get('/api/v1/public/sessions', (req, res) => {
+    UserSession.getUserSessionTableList((err, userSessions) => {
+      if (err)
+        return res.status(400).send({ error: err });
+      else
+        return res.send({ data: userSessions });
+    });
+  });
+
+  app.get('/api/v1/public/tables', (req, res) => {
+    UserTable.getUserTableList((err, userTables) => {
+      if (err)
+        return res.status(400).send({ error: err });
+      else
+        return res.send({ data: userTables });
     });
   });
 

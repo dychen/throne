@@ -9,12 +9,18 @@ class AdminSessions extends React.Component {
     super(props);
 
     this.state = {
-      view: 'active'
+      view: 'active',
+      tables: []
     };
 
     // Nav tab methods
     this.changeView = this.changeView.bind(this);
     this.filterSessions = this.filterSessions.bind(this);
+
+    // To populate AdminSessionTable component
+    this.getTableList = this.getTableList.bind(this);
+
+    this.getTableList();
   }
 
   changeView(eventKey, e) {
@@ -26,6 +32,40 @@ class AdminSessions extends React.Component {
       return sessions.filter((session) => session.active);
     else
       return sessions.filter((session) => !session.active);
+  }
+
+  getTableList() {
+    fetch(`${SERVER_URL}/api/v1/tables`, {
+      method: 'GET',
+      credentials: 'include'
+    })
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+      else {
+        return response.json().then(json => {
+          console.error(json);
+          throw new Error(json);
+        });
+      }
+    })
+    /*
+     * Response format: {
+     *   data: [UserTable list]
+     * }
+     */
+    .then(json => {
+      // Success
+      console.log('Success', json);
+      // Transform dates
+      this.setState({ tables: json.data });
+      return json;
+    })
+    .catch(err => {
+      // Failure
+      return err;
+    });
   }
 
   render() {
@@ -40,7 +80,8 @@ class AdminSessions extends React.Component {
           </Nav>
         </div>
         <div className="thrn-nav-view-container">
-          <AdminSessionTable filterSessions={this.filterSessions} />
+          <AdminSessionTable filterSessions={this.filterSessions}
+                             tables={this.state.tables} />
         </div>
       </AdminPage>
     );

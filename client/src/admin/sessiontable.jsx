@@ -3,7 +3,6 @@ import Reactable from 'reactable';
 import moment from 'moment';
 import 'whatwg-fetch';
 
-import {TABLES} from '../constants.jsx';
 import {AdminTable} from './table.jsx';
 
 const transformAPIData = (d) => {
@@ -44,7 +43,7 @@ class AdminSessionTable extends React.Component {
       { key: 'startTime', label: 'Start Time' },
       { key: 'endTime', label: 'End Time' },
       { key: 'elapsedTime', label: 'Total Time' },
-      { key: 'table', label: 'Table' },
+      { key: 'tableName', label: 'Table' },
       { key: 'active', label: 'Sign Out' }
     ];
     this.CLICKABLE_COLUMNS = {
@@ -52,12 +51,6 @@ class AdminSessionTable extends React.Component {
         getClassNameFromValue: this.getActiveClassName,
         getDisplayFromValue: this.getActiveButtonDisplay,
         onClick: this.endSession
-      }
-    };
-    this.DROPDOWN_COLUMNS = {
-      table: {
-        options: TABLES,
-        onSelect: this.changeTable
       }
     };
     this.DERIVED_COLUMNS = {
@@ -155,12 +148,12 @@ class AdminSessionTable extends React.Component {
     });
   }
 
-  changeTableAPI(newTable, sessionId) {
+  changeTableAPI(newTableId, sessionId) {
     fetch(`${SERVER_URL}/api/v1/sessions/tables/${sessionId}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
-      body: JSON.stringify({ table: newTable })
+      body: JSON.stringify({ table: newTableId })
     })
     .then(response => {
       if (response.ok) {
@@ -212,7 +205,15 @@ class AdminSessionTable extends React.Component {
 
   changeTable(e, value, session) {
     e.stopPropagation();
-    this.changeTableAPI(value, session._id);
+    // Find the table corresponding to the selection and update accordingly.
+    // There should only be one since names are unique.
+    const tables = this.props.tables.filter((table) => table.name === value);
+    // Update
+    if (tables && tables.length > 0)
+      this.changeTableAPI(tables[0]._id, session._id);
+    // Clear out table if the None field is selected
+    else
+      this.changeTableAPI(undefined, session._id);
   }
 
   /*
@@ -228,11 +229,17 @@ class AdminSessionTable extends React.Component {
   }
 
   render() {
+    const DROPDOWN_COLUMNS = {
+      tableName: {
+        options: ['None'].concat(this.props.tables.map((table) => table.name)),
+        onSelect: this.changeTable
+      }
+    };
     return (
       <AdminTable INITIAL_SORT={{ column: 'startTime', direction: -1 }}
                   COLUMNS={this.COLUMNS}
                   CLICKABLE_COLUMNS={this.CLICKABLE_COLUMNS}
-                  DROPDOWN_COLUMNS={this.DROPDOWN_COLUMNS}
+                  DROPDOWN_COLUMNS={DROPDOWN_COLUMNS}
                   DERIVED_COLUMNS={this.DERIVED_COLUMNS}
                   COLUMN_KEYS={this.COLUMN_KEYS}
                   data={this.props.filterSessions(this.state.sessions)} />

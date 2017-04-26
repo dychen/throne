@@ -5,8 +5,6 @@ import 'whatwg-fetch';
 
 import './website.scss';
 
-import {TABLES} from './constants.jsx';
-
 class WebsiteHeader extends React.Component {
   render() {
     return (
@@ -57,12 +55,11 @@ class WebsitePage extends React.Component {
 class CardTable extends React.Component {
   render() {
     const players = this.props.players.map((player) => {
-      const playerFirstLetter = player.firstName ? `${player.firstName[0]}.` : '';
-      const playerName = `${playerFirstLetter} ${player.lastName}`;
+      const defaultImageUrl = ('https://s3-us-west-1.amazonaws.com/throne-s3/'
+                               + 'images/default-profile.png');
       return (
         <div className="table-player" key={player._id}>
-          <img className="table-player-photo" src={player.photoUrl} />
-          <div className="table-player-name">{playerName}</div>
+          <img className="table-player-photo" src={defaultImageUrl} />
         </div>
       )
     });
@@ -81,16 +78,20 @@ class WebsiteTables extends React.Component {
   constructor(props) {
     super(props);
 
-    this.API_URL = `${SERVER_URL}/api/v1/sessions/tables`;
+    this.TABLE_API_URL = `${SERVER_URL}/api/v1/public/tables`;
+    this.SESSION_API_URL = `${SERVER_URL}/api/v1/public/sessions`;
 
     this.state = {
-      players: []
+      players: [],
+      tables: []
     };
 
     this._tick = this._tick.bind(this);
+    this.getTableList = this.getTableList.bind(this);
     this.getSessionList = this.getSessionList.bind(this);
     this._filterPlayersByTable = this._filterPlayersByTable.bind(this);
 
+    this.getTableList();
     this.getSessionList();
   }
 
@@ -104,11 +105,43 @@ class WebsiteTables extends React.Component {
   }
 
   _tick() {
+    this.getTableList();
     this.getSessionList();
   }
 
+  getTableList() {
+    fetch(this.TABLE_API_URL, {
+      method: 'GET'
+    })
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+      else {
+        return response.json().then(json => {
+          console.error(json);
+          throw new Error(json);
+        });
+      }
+    })
+    /*
+     * Response format: {
+     *   data: [UserTable list]
+     * }
+     */
+    .then(json => {
+      // Success
+      this.setState({ tables: json.data });
+      return json;
+    })
+    .catch(err => {
+      // Failure
+      return err;
+    });
+  }
+
   getSessionList() {
-    fetch(this.API_URL, {
+    fetch(this.SESSION_API_URL, {
       method: 'GET'
     })
     .then(response => {
@@ -139,14 +172,13 @@ class WebsiteTables extends React.Component {
   }
 
   _filterPlayersByTable(players, table) {
-    return players.filter((player) => player.table === table);
+    return players.filter((player) => player._table === table._id);
   }
 
   render() {
-    const tables = TABLES.filter((table) => table !== 'None')
-                         .map((table) => {
+    const tables = this.state.tables.map((table) => {
       return (
-        <CardTable key={table} name={table}
+        <CardTable key={table._id} name={table.name}
                    players={this._filterPlayersByTable(this.state.players,
                                                        table)} />
       );
@@ -323,7 +355,7 @@ class WebsiteRegister extends React.Component {
                    onChange={this.handleInput} />
             <div className="thrn-button"
                  onClick={this.submitRegistration}>
-              Request Code
+              Register
             </div>
           </div>
         );
