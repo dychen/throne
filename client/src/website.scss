@@ -199,7 +199,7 @@ $ABOUT_IMAGE_URL: 'https://s3-us-west-1.amazonaws.com/throne-s3/images/about.jpg
   margin: auto;
 
   .thrn-card-table {
-    background-color: $THRN_GREEN;
+    background-color: $THRN_TABLE_GREEN;
     color: $THRN_WHITE;
     height: 200px;
     width: 300px;
@@ -232,11 +232,39 @@ $ABOUT_IMAGE_URL: 'https://s3-us-west-1.amazonaws.com/throne-s3/images/about.jpg
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      opacity: 0.7;
       img.table-player-photo {
         height: 50px;
         width: 50px;
         border-radius: 50px;
         border: 3px solid $THRN_WHITE;
+      }
+      img.table-player-photo.photo-1 {
+        border: 3px solid $THRN_RED;
+      }
+      img.table-player-photo.photo-2 {
+        border: 3px solid $THRN_ORANGE;
+      }
+      img.table-player-photo.photo-3 {
+        border: 3px solid $THRN_YELLOW;
+      }
+      img.table-player-photo.photo-4 {
+        border: 3px solid $THRN_GREEN;
+      }
+      img.table-player-photo.photo-5 {
+        border: 3px solid $THRN_TEAL;
+      }
+      img.table-player-photo.photo-6 {
+        border: 3px solid $THRN_BLUE;
+      }
+      img.table-player-photo.photo-7 {
+        border: 3px solid $THRN_DARK_BLUE;
+      }
+      img.table-player-photo.photo-8 {
+        border: 3px solid $THRN_PURPLE;
+      }
+      img.table-player-photo.photo-9 {
+        border: 3px solid $THRN_PINK;
       }
     }
   }

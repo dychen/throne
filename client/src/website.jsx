@@ -54,12 +54,13 @@ class WebsitePage extends React.Component {
 
 class CardTable extends React.Component {
   render() {
-    const players = this.props.players.map((player) => {
+    const players = this.props.players.map((player, i) => {
       const defaultImageUrl = ('https://s3-us-west-1.amazonaws.com/throne-s3/'
                                + 'images/default-profile.png');
+      const imgClassName = "table-player-photo photo-" + (i % 9 + 1);
       return (
         <div className="table-player" key={player._id}>
-          <img className="table-player-photo" src={defaultImageUrl} />
+          <img className={imgClassName} src={defaultImageUrl} />
         </div>
       )
     });
