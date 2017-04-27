@@ -6,6 +6,7 @@ import 'whatwg-fetch';
 import {AdminPage} from './admin.jsx';
 import {AdminTable} from './table.jsx';
 import {AdminModal} from './modal.jsx';
+import {CSVExporter} from './csvexport.jsx';
 
 const transformAPIData = (d) => {
   d.createdAt = moment(d.createdAt).format('ll');
@@ -396,7 +397,7 @@ class AdminUsers extends React.Component {
 
 
   render() {
-    let adminTable;
+    let adminTable, csvExporter;
     if (this.state.view === 'unverified') {
       adminTable = (
         <AdminTable INITIAL_SORT={{ column: 'createdAt', direction: -1 }}
@@ -406,6 +407,7 @@ class AdminUsers extends React.Component {
                     data={this._filterUsers(this.state.users)}
                     onRowClick={this.showUpdateModal} />
       );
+      csvExporter = '';
     }
     else {
       adminTable = (
@@ -415,6 +417,11 @@ class AdminUsers extends React.Component {
                     COLUMN_KEYS={this.ACTIVE_COLUMN_KEYS}
                     data={this._filterUsers(this.state.users)}
                     onRowClick={this.showUpdateModal} />
+      );
+      csvExporter = (
+        <CSVExporter title="users"
+                     columns={this.ACTIVE_COLUMNS}
+                     data={this._filterUsers(this.state.users)} />
       );
     }
     return (
@@ -435,6 +442,7 @@ class AdminUsers extends React.Component {
             </div>
           </div>
           {adminTable}
+          {csvExporter}
           <AdminModal FIELDS={this.EDITABLE_COLUMNS}
                       title={this.state.modal.title}
                       data={this.state.modal.data}

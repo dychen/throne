@@ -17,9 +17,9 @@ class App extends React.Component {
     return (
       <BrowserRouter>
         <div className="thrn-app-container">
-          <Route exact path="/" component={WebsiteRegister}/>
-          <Route path="/register" component={WebsiteRegister} />
+          <Route exact path="/" component={WebsiteTables}/>
           <Route path="/tables" component={WebsiteTables}/>
+          <Route path="/register" component={WebsiteRegister} />
           <Route path="/about" component={WebsiteAbout} />
           <Route exact path="/admin" component={WebsiteAdmin} />
           <Route path="/admin/users" component={AdminUsers} />

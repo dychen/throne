@@ -10,22 +10,22 @@ class WebsiteHeader extends React.Component {
     return (
       <div className="thrn-website-header">
         <div className="thrn-header-desktop">
-          <NavLink to="/register" className="header-link" activeClassName="active">
-            REGISTER
-          </NavLink>
           <NavLink to="/tables" className="header-link" activeClassName="active">
             TABLES
+          </NavLink>
+          <NavLink to="/register" className="header-link" activeClassName="active">
+            REGISTER
           </NavLink>
           <NavLink to="/about" className="header-link" activeClassName="active">
             ABOUT
           </NavLink>
         </div>
         <div className="thrn-header-mobile">
+          <NavLink to="/tables" className="header-link" activeClassName="active">
+            <i className="ion-home" />
+          </NavLink>
           <NavLink to="/register" className="header-link" activeClassName="active">
             <i className="ion-person-add" />
-          </NavLink>
-          <NavLink to="/tables" className="header-link" activeClassName="active">
-            <i className="ion-earth" />
           </NavLink>
           <NavLink to="/about" className="header-link" activeClassName="active">
             <i className="ion-information-circled" />

@@ -4,6 +4,7 @@ import moment from 'moment';
 import 'whatwg-fetch';
 
 import {AdminTable} from './table.jsx';
+import {CSVExporter} from './csvexport.jsx';
 
 const transformAPIData = (d) => {
   d.startTime = d.startTime ? moment(d.startTime).format('YYYY-MM-DD HH:mm'): '';
@@ -236,13 +237,18 @@ class AdminSessionTable extends React.Component {
       }
     };
     return (
-      <AdminTable INITIAL_SORT={{ column: 'startTime', direction: -1 }}
-                  COLUMNS={this.COLUMNS}
-                  CLICKABLE_COLUMNS={this.CLICKABLE_COLUMNS}
-                  DROPDOWN_COLUMNS={DROPDOWN_COLUMNS}
-                  DERIVED_COLUMNS={this.DERIVED_COLUMNS}
-                  COLUMN_KEYS={this.COLUMN_KEYS}
-                  data={this.props.filterSessions(this.state.sessions)} />
+      <div>
+        <AdminTable INITIAL_SORT={{ column: 'startTime', direction: -1 }}
+                    COLUMNS={this.COLUMNS}
+                    CLICKABLE_COLUMNS={this.CLICKABLE_COLUMNS}
+                    DROPDOWN_COLUMNS={DROPDOWN_COLUMNS}
+                    DERIVED_COLUMNS={this.DERIVED_COLUMNS}
+                    COLUMN_KEYS={this.COLUMN_KEYS}
+                    data={this.props.filterSessions(this.state.sessions)} />
+        <CSVExporter title="sessions"
+                     columns={this.COLUMNS}
+                     data={this.props.filterSessions(this.state.sessions)} />
+      </div>
     );
   }
 }

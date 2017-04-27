@@ -6,6 +6,7 @@ import 'whatwg-fetch';
 import {AdminPage} from './admin.jsx';
 import {AdminTable} from './table.jsx';
 import {AdminModal} from './modal.jsx';
+import {CSVExporter} from './csvexport.jsx';
 
 const transformAPIData = (d) => {
   d.date = moment(d.date).format('YYYY-MM-DD HH:mm');
@@ -254,6 +255,9 @@ class AdminPayments extends React.Component {
                       COLUMN_KEYS={this.COLUMN_KEYS}
                       data={this.state.payments}
                       onRowClick={this.showUpdateModal} />
+          <CSVExporter title="payments"
+                       columns={this.COLUMNS}
+                       data={this.state.payments} />
           <AdminModal FIELDS={this.EDITABLE_COLUMNS}
                       title={this.state.modal.title}
                       data={this.state.modal.data}

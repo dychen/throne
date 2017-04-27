@@ -1,0 +1,21 @@
+@import './../constants.scss';
+@import './../mixins.scss';
+
+.thrn-csv-export-button {
+  right: 20px;
+  top: 12px;
+  width: 15px;
+  height: 15px;
+  padding: 10px;
+  color: $THRN_DARK_GRAY;
+  background: $THRN_WHITE;
+  border: 1px solid $THRN_DARK_GRAY;
+  border-radius: 5px;
+
+  @include hvr-fade($THRN_WHITE, $THRN_DARK_GRAY);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+

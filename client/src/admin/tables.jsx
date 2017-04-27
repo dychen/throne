@@ -57,7 +57,7 @@ class AdminTables extends React.Component {
     if (this.state.view === this.NONE_EVENT_KEY) {
       const tableIds = this.state.tables.map((table) => table._id);
       return sessions.filter((session) => {
-        return !tableIds.includes(session._table)
+        return !tableIds.includes(session._table) && session.active
       });
     }
     else {
