@@ -10,27 +10,13 @@ import {CSVExporter} from './csvexport.jsx';
 
 const transformAPIData = (d) => {
   d.date = moment(d.date).format('YYYY-MM-DD HH:mm');
+  d.startTime = d.startTime ? moment(d.startTime).format('YYYY-MM-DD HH:mm'): '';
+  d.endTime = d.endTime ? moment(d.endTime).format('YYYY-MM-DD HH:mm') : '';
 };
 
 class AdminPayments extends React.Component {
   constructor(props) {
     super(props);
-
-    this.API_URL = `${SERVER_URL}/api/v1/payments`;
-    this.COLUMNS = [
-      { key: '_user', label: 'User Id' },
-      { key: 'photoUrl', label: 'Photo' },
-      { key: 'firstName', label: 'First Name' },
-      { key: 'lastName', label: 'Last Name' },
-      { key: 'date', label: 'Date' },
-      { key: 'type', label: 'Type' },
-      { key: 'amount', label: 'Amount' },
-      { key: 'paid', label: 'Paid' }
-    ];
-    this.EDITABLE_COLUMNS = this.COLUMNS.filter((c) => {
-      return !['photoUrl', 'firstName', 'lastName'].includes(c.key);
-    });
-    this.COLUMN_KEYS = this.COLUMNS.map((c) => c.key);
 
     this.state = {
       payments: [],
@@ -43,6 +29,9 @@ class AdminPayments extends React.Component {
       }
     };
 
+    // Table methods
+    this.getElapsedTimeDisplay = this.getElapsedTimeDisplay.bind(this);
+
     // Modal methods
     this.showCreateModal = this.showCreateModal.bind(this);
     this.showUpdateModal = this.showUpdateModal.bind(this);
@@ -54,7 +43,45 @@ class AdminPayments extends React.Component {
     this.updatePayment = this.updatePayment.bind(this);
     this.deletePayment = this.deletePayment.bind(this);
 
+    this.API_URL = `${SERVER_URL}/api/v1/payments`;
+    this.COLUMNS = [
+      { key: '_user', label: 'User Id' },
+      { key: 'photoUrl', label: 'Photo' },
+      { key: 'firstName', label: 'First Name' },
+      { key: 'lastName', label: 'Last Name' },
+      { key: 'date', label: 'Date' },
+      { key: 'type', label: 'Type' },
+      { key: 'startTime', label: 'Start Time' },
+      { key: 'endTime', label: 'End Time' },
+      { key: 'elapsedTime', label: 'Total Time' },
+      { key: 'amount', label: 'Amount' },
+      { key: 'paid', label: 'Paid' }
+    ];
+    this.EDITABLE_COLUMNS = this.COLUMNS.filter((c) => {
+      return !['photoUrl', 'firstName', 'lastName'].includes(c.key);
+    });
+    this.DERIVED_COLUMNS = {
+      elapsedTime: {
+        getDisplayFromRow: this.getElapsedTimeDisplay
+      }
+    };
+    this.COLUMN_KEYS = this.COLUMNS.map((c) => c.key);
+
     this.getPaymentList();
+  }
+
+  /*
+   * Formatting reference:
+   *   http://stackoverflow.com/questions/13262621/
+   *   how-do-i-use-format-on-a-moment-js-duration
+   */
+  getElapsedTimeDisplay(payment) {
+    if (!payment.startTime || !payment.endTime)
+      return undefined;
+    const startTime = new Date(payment.startTime);
+    const endTime = new Date(payment.endTime);
+    const diff = moment(endTime).diff(moment(startTime));
+    return moment.utc(moment.duration(diff).asMilliseconds()).format('HH:mm:ss');
   }
 
   showCreateModal(e) {
@@ -253,6 +280,7 @@ class AdminPayments extends React.Component {
           <AdminTable INITIAL_SORT={{ column: 'date', direction: -1 }}
                       COLUMNS={this.COLUMNS}
                       COLUMN_KEYS={this.COLUMN_KEYS}
+                      DERIVED_COLUMNS={this.DERIVED_COLUMNS}
                       data={this.state.payments}
                       onRowClick={this.showUpdateModal} />
           <CSVExporter title="payments"

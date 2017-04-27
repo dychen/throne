@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+// Logic duplicated in the frontend
 const PRICE_PER_HOUR = 10;
 
 // One-to-Many reference: http://mongoosejs.com/docs/populate.html
@@ -7,6 +8,10 @@ const userPaymentSchema = new mongoose.Schema({
   _user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
+  },
+  _session: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'UserSession'
   },
   date: {
     type: Date,
@@ -41,8 +46,9 @@ userPaymentSchema.statics.calculateAmount = (startTime, endTime) => {
 };
 
 userPaymentSchema.statics.getUserPaymentList = (callback) => {
-  UserPayment.find({}, '_user date type amount paid')
+  UserPayment.find({}, '_user _session date type amount paid')
     .populate('_user', 'photoUrl firstName lastName')
+    .populate('_session', 'startTime endTime')
     .exec((err, userPayments) => {
       if (err) {
         console.error(err);
@@ -56,6 +62,9 @@ userPaymentSchema.statics.getUserPaymentList = (callback) => {
           photoUrl: userPayment._user ? userPayment._user.photoUrl : undefined,
           firstName: userPayment._user ? userPayment._user.firstName : undefined,
           lastName: userPayment._user ? userPayment._user.lastName : undefined,
+          _session: userPayment._session ? userPayment._session._id : undefined,
+          startTime: userPayment._session ? userPayment._session.startTime : undefined,
+          endTime: userPayment._session ? userPayment._session.endTime : undefined,
           date: userPayment.date,
           type: userPayment.type,
           amount: userPayment.amount,

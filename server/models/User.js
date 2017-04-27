@@ -355,6 +355,7 @@ userSchema.statics.endSession = (sessionId, callback) => {
           // 3. Create a new UserPayment
           UserPayment.create({
             _user: user._id,
+            _session: userSession._id,
             date: new Date(),
             type: 'Hourly',
             amount: UserPayment.calculateAmount(userSession.startTime,

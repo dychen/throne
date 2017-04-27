@@ -11,6 +11,14 @@ const transformAPIData = (d) => {
   d.endTime = d.endTime ? moment(d.endTime).format('YYYY-MM-DD HH:mm') : '';
 };
 
+// Logic duplicated in the backend
+const PRICE_PER_HOUR = 10;
+
+const calculateAmount = (startTime, endTime) => {
+  return Math.floor((endTime.getTime() - startTime.getTime())
+                    / (60 * 1000) * (PRICE_PER_HOUR / 60));
+};
+
 class AdminSessionTable extends React.Component {
   constructor(props) {
     super(props);
@@ -35,6 +43,7 @@ class AdminSessionTable extends React.Component {
     this.endSession = this.endSession.bind(this);
     this.changeTable = this.changeTable.bind(this);
     this.getElapsedTimeDisplay = this.getElapsedTimeDisplay.bind(this);
+    this.getAmountDisplay = this.getAmountDisplay.bind(this);
 
     this.API_URL = `${SERVER_URL}/api/v1/sessions`;
     this.COLUMNS = [
@@ -44,6 +53,7 @@ class AdminSessionTable extends React.Component {
       { key: 'startTime', label: 'Start Time' },
       { key: 'endTime', label: 'End Time' },
       { key: 'elapsedTime', label: 'Total Time' },
+      { key: 'amount', label: 'Amount' },
       { key: 'tableName', label: 'Table' },
       { key: 'active', label: 'Sign Out' }
     ];
@@ -57,6 +67,9 @@ class AdminSessionTable extends React.Component {
     this.DERIVED_COLUMNS = {
       elapsedTime: {
         getDisplayFromRow: this.getElapsedTimeDisplay
+      },
+      amount: {
+        getDisplayFromRow: this.getAmountDisplay
       }
     };
     this.COLUMN_KEYS = this.COLUMNS.map((c) => c.key);
@@ -227,6 +240,12 @@ class AdminSessionTable extends React.Component {
     const endTime = session.endTime ? new Date(session.endTime) : this.state.date;
     const diff = moment(endTime).diff(moment(startTime));
     return moment.utc(moment.duration(diff).asMilliseconds()).format('HH:mm:ss');
+  }
+
+  getAmountDisplay(session) {
+    const startTime = new Date(session.startTime);
+    const endTime = session.endTime ? new Date(session.endTime) : this.state.date;
+    return calculateAmount(startTime, endTime);
   }
 
   render() {
