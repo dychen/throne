@@ -5,7 +5,7 @@ import {Route, BrowserRouter} from 'react-router-dom';
 import './index.scss';
 import './public/css/bootstrap.css';
 
-import {WebsiteTables, WebsiteRegister, WebsiteAbout,
+import {WebsiteHome, WebsiteTables, WebsiteRegister, WebsiteAbout,
         WebsiteAdmin} from './website.jsx';
 import {AdminUsers} from './admin/users.jsx';
 import {AdminSessions} from './admin/sessions.jsx';
@@ -17,7 +17,8 @@ class App extends React.Component {
     return (
       <BrowserRouter>
         <div className="thrn-app-container">
-          <Route exact path="/" component={WebsiteTables}/>
+          <Route exact path="/" component={WebsiteHome}/>
+          <Route exact path="/home" component={WebsiteHome}/>
           <Route path="/tables" component={WebsiteTables}/>
           <Route path="/register" component={WebsiteRegister} />
           <Route path="/about" component={WebsiteAbout} />

@@ -10,27 +10,44 @@ class WebsiteHeader extends React.Component {
     return (
       <div className="thrn-website-header">
         <div className="thrn-header-desktop">
-          <NavLink to="/tables" className="header-link" activeClassName="active">
-            TABLES
+          <NavLink to="/home" className="header-link" activeClassName="active">
+            HOME
           </NavLink>
           <NavLink to="/register" className="header-link" activeClassName="active">
             REGISTER
+          </NavLink>
+          <NavLink to="/tables" className="header-link" activeClassName="active">
+            TABLES
           </NavLink>
           <NavLink to="/about" className="header-link" activeClassName="active">
             ABOUT
           </NavLink>
         </div>
         <div className="thrn-header-mobile">
-          <NavLink to="/tables" className="header-link" activeClassName="active">
+          <NavLink to="/home" className="header-link" activeClassName="active">
             <i className="ion-home" />
           </NavLink>
           <NavLink to="/register" className="header-link" activeClassName="active">
             <i className="ion-person-add" />
           </NavLink>
+          <NavLink to="/tables" className="header-link" activeClassName="active">
+            <i className="ion-earth" />
+          </NavLink>
           <NavLink to="/about" className="header-link" activeClassName="active">
             <i className="ion-information-circled" />
           </NavLink>
         </div>
+      </div>
+    );
+  }
+}
+
+class WebsiteFooter extends React.Component {
+  render() {
+    return (
+      <div className="thrn-website-footer">
+        <img src='https://s3-us-west-1.amazonaws.com/throne-s3/images/logo-white-clear.png' />
+        <span>Throne Social Club</span>
       </div>
     );
   }
@@ -47,7 +64,40 @@ class WebsitePage extends React.Component {
         <div className="thrn-website-body">
           {this.props.children}
         </div>
+        <WebsiteFooter />
       </div>
+    );
+  }
+}
+
+class WebsiteHome extends React.Component {
+  render() {
+    return (
+      <WebsitePage backgroundClass="home">
+        <div className="thrn-website-home">
+          <div className="thrn-website-home-title">
+            <span>Throne Social Club</span>
+            <span>Poker for the players</span>
+          </div>
+          <div className="thrn-website-home-buttons">
+            <span className="home-button">
+              <a className="text-group-icon" target="_blank"
+                 href="https://www.instagram.com/thronepoker/">
+                FOLLOW
+              </a>
+            </span>
+
+            <span className="home-button">
+              <NavLink to="/register">
+                REGISTER
+              </NavLink>
+            </span>
+          </div>
+          <div className="thrn-website-home-subtitle">
+            <span>Safe.&nbsp;&nbsp;&nbsp;Secure.&nbsp;&nbsp;&nbsp;Social.</span>
+          </div>
+        </div>
+      </WebsitePage>
     );
   }
 }
@@ -185,7 +235,7 @@ class WebsiteTables extends React.Component {
       );
     });
     return (
-      <WebsitePage>
+      <WebsitePage backgroundClass="tables">
         <div className="thrn-card-table-container">
           {tables}
         </div>
@@ -437,5 +487,5 @@ class WebsiteAdmin extends React.Component {
   }
 }
 
-export {WebsitePage, WebsiteHeader, WebsiteTables, WebsiteRegister, WebsiteAbout,
-        WebsiteAdmin};
+export {WebsitePage, WebsiteHeader, WebsiteFooter, WebsiteHome, WebsiteTables,
+        WebsiteRegister, WebsiteAbout, WebsiteAdmin};
