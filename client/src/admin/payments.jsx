@@ -285,7 +285,8 @@ class AdminPayments extends React.Component {
                       onRowClick={this.showUpdateModal} />
           <CSVExporter title="payments"
                        columns={this.COLUMNS}
-                       data={this.state.payments} />
+                       data={this.state.payments}
+                       DERIVED_COLUMNS={this.DERIVED_COLUMNS} />
           <AdminModal FIELDS={this.EDITABLE_COLUMNS}
                       title={this.state.modal.title}
                       data={this.state.modal.data}

@@ -266,7 +266,8 @@ class AdminSessionTable extends React.Component {
                     data={this.props.filterSessions(this.state.sessions)} />
         <CSVExporter title="sessions"
                      columns={this.COLUMNS}
-                     data={this.props.filterSessions(this.state.sessions)} />
+                     data={this.props.filterSessions(this.state.sessions)}
+                     DERIVED_COLUMNS={this.DERIVED_COLUMNS} />
       </div>
     );
   }

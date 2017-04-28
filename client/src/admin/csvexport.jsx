@@ -9,17 +9,22 @@ import './csvexport.scss';
  *   data [Array]: List of objects to transform to a list of lists:
  *     [{ k1: v1, k2: v2, ...}, ...]
  *   addHeader [boolean]: [Optional] Whether to add a header row with column
- *                        displays. Defaults to true.
+ *                        displays. Defaults to true
+ *   derivedColumns [Object]: See DERIVED_COLUMNS prop in CSVExporter
  */
-const formatCSVData = (columns, data, addHeader) => {
+const formatCSVData = (columns, data, addHeader, derivedColumns) => {
   if (!columns || !data)
     return [];
 
-  addHeader = addHeader === undefined ? true : addHead;
+  addHeader = addHeader === undefined ? true : addHeader;
 
-  const rowData = data.map((data) => {
+  const rowData = data.map((d) => {
     return columns.map((column) => {
-      return `${data[column.key]}`;
+      if (derivedColumns && derivedColumns.hasOwnProperty(column.key)) {
+        const result = derivedColumns[column.key].getDisplayFromRow(d) || '';
+        return `"${result}"`;
+      }
+      return `"${d[column.key]}"`;
     })
   });
   if (addHeader)
@@ -32,6 +37,8 @@ const formatCSVData = (columns, data, addHeader) => {
  *   title [string]: File name
  *   columns [Array]: List of keys to map as column headers
  *   data [Array]: List of objects - should be transformed to a list of lists
+ *   DERIVED_COLUMNS [Object]: Object of { key: { getDisplayFromRow: [func] }}
+ *                             that transforms row data
  */
 class CSVExporter extends React.Component {
   constructor(props) {
@@ -40,7 +47,8 @@ class CSVExporter extends React.Component {
   }
 
   exportCSV(e) {
-    const formattedData = formatCSVData(this.props.columns, this.props.data);
+    const formattedData = formatCSVData(this.props.columns, this.props.data,
+                                        true, this.props.DERIVED_COLUMNS);
     const csvStr = encodeURIComponent(formattedData.join('\n'));
     let a = document.createElement('a');
     a.href = 'data:attachment/csv,' + csvStr;
