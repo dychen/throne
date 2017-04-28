@@ -70,17 +70,6 @@ $ABOUT_IMAGE_URL: 'https://s3-us-west-1.amazonaws.com/throne-s3/images/about.jpg
 
 /* Header */
 
-@media (max-width: $SCREEN_WIDTH_SM) {
-  .thrn-header-desktop {
-    display: none;
-  }
-}
-@media (min-width: $SCREEN_WIDTH_SM+1) {
-  .thrn-header-mobile {
-    display: none;
-  }
-}
-
 .thrn-website-header {
   background-color: $THRN_BLACK;
   border-bottom: 1px solid $THRN_DARK_GRAY;
@@ -90,28 +79,49 @@ $ABOUT_IMAGE_URL: 'https://s3-us-west-1.amazonaws.com/throne-s3/images/about.jpg
   align-items: center;
   justify-content: center;
 
+  .thrn-header-desktop {
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    a.header-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
   a.header-link {
     font-weight: 900;
     font-size: 1.2em;
     width: 100px;
+    height: 100%;
     margin: 20px;
     color: $THRN_LIGHT_GRAY;
 
-    @include hvr-color($THRN_WHITE);
+    @include hvr-fade($THRN_BLACK, $THRN_WHITE);
   }
 
   a.header-link.active {
-    color: $THRN_WHITE;
+    color: $THRN_BLACK;
+    background-color: $THRN_WHITE;
+  }
+}
+
+@media (max-width: $SCREEN_WIDTH_SM) {
+  div.thrn-header-desktop {
+    display: none;
+  }
+}
+@media (min-width: $SCREEN_WIDTH_SM+1) {
+  div.thrn-header-mobile {
+    display: none;
   }
 }
 
 /* Footer */
-
-@media (max-width: $SCREEN_WIDTH_SM) {
-  div.thrn-website-footer {
-    display: none;
-  }
-}
 
 .thrn-website-footer {
   padding-left: 30px;
@@ -122,6 +132,12 @@ $ABOUT_IMAGE_URL: 'https://s3-us-west-1.amazonaws.com/throne-s3/images/about.jpg
     padding-left: 20px;
     padding-right: 20px;
     max-width: 40px;
+  }
+}
+
+@media (max-width: $SCREEN_WIDTH_SM) {
+  .thrn-website-footer {
+    display: none;
   }
 }
 
