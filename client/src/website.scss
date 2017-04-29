@@ -3,7 +3,7 @@
 
 $ELEMENT_WIDTH: 200px;
 $BG_IMAGE_URL: 'https://s3-us-west-1.amazonaws.com/throne-s3/images/background.png';
-$HOME_IMAGE_URL: 'http://static.thousandwonders.net/Austin.original.13177.jpg';
+$HOME_IMAGE_URL: 'https://s3-us-west-1.amazonaws.com/throne-s3/images/static-thousandwonders-austin.jpg';
 $REGISTER_IMAGE_URL: 'https://s3-us-west-1.amazonaws.com/throne-s3/images/register.jpg';
 $ABOUT_IMAGE_URL: 'https://s3-us-west-1.amazonaws.com/throne-s3/images/about.jpg';
 
@@ -79,20 +79,6 @@ $ABOUT_IMAGE_URL: 'https://s3-us-west-1.amazonaws.com/throne-s3/images/about.jpg
   align-items: center;
   justify-content: center;
 
-  .thrn-header-desktop {
-    height: 100%;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    a.header-link {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-  }
-
   a.header-link {
     font-weight: 900;
     font-size: 1.2em;
@@ -102,6 +88,20 @@ $ABOUT_IMAGE_URL: 'https://s3-us-west-1.amazonaws.com/throne-s3/images/about.jpg
     color: $THRN_LIGHT_GRAY;
 
     @include hvr-fade($THRN_BLACK, $THRN_WHITE);
+  }
+}
+
+.thrn-header-desktop {
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  a.header-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   a.header-link.active {

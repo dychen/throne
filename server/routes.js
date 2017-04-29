@@ -15,14 +15,19 @@ const isAdmin = (req, res, next) => {
 
 // http://stackoverflow.com/questions/38909259/
 //   reactjs-no-access-control-allow-origin
+// http://stackoverflow.com/questions/7067966/how-to-allow-cors
 const addCORSHeaders = (req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
   res.header('Access-Control-Allow-Headers',
              'Origin, X-Requested-With, Content-Type, Accept');
   next();
 };
 
 module.exports = (app, passport, express) => {
+  // Add to every response
+  app.use(addCORSHeaders);
+
   app.post('/auth/v1/register', (req, res) => {
     User.registerUser(req.body, (err, user) => {
       if (err)
@@ -254,7 +259,7 @@ module.exports = (app, passport, express) => {
 
   // Limited version of sessions (just users and their tables) for table
   // display. Unauthenticated because it's shown on the home page.
-  app.get('/api/v1/public/sessions', addCORSHeaders, (req, res) => {
+  app.get('/api/v1/public/sessions', (req, res) => {
     UserSession.getUserSessionTableList((err, userSessions) => {
       if (err)
         return res.status(400).send({ error: err });
@@ -263,7 +268,7 @@ module.exports = (app, passport, express) => {
     });
   });
 
-  app.get('/api/v1/public/tables', addCORSHeaders, (req, res) => {
+  app.get('/api/v1/public/tables', (req, res) => {
     UserTable.getUserTableList((err, userTables) => {
       if (err)
         return res.status(400).send({ error: err });

@@ -1,6 +1,4 @@
-```
-https://thronepoker.herokuapp.com
-```
+https://www.thronepoker.com/
 
 Services:
 * Twilio
