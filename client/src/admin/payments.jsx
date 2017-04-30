@@ -55,10 +55,11 @@ class AdminPayments extends React.Component {
       { key: 'endTime', label: 'End Time' },
       { key: 'elapsedTime', label: 'Total Time' },
       { key: 'amount', label: 'Amount' },
-      { key: 'paid', label: 'Paid' }
+      { key: 'paid', label: 'Paid' },
+      { key: 'notes', label: 'Notes' }
     ];
     this.EDITABLE_COLUMNS = this.COLUMNS.filter((c) => {
-      return !['photoUrl', 'firstName', 'lastName'].includes(c.key);
+      return !['photoUrl', 'firstName', 'lastName', 'elapsedTime'].includes(c.key);
     });
     this.DERIVED_COLUMNS = {
       elapsedTime: {

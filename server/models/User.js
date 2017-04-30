@@ -48,8 +48,7 @@ const userSchema = new mongoose.Schema({
     default: false
   },
   referrer: {
-    type: String,
-    default: 'Robert Paape'
+    type: String
   },
   createdAt: {
     type: Date,
@@ -360,7 +359,8 @@ userSchema.statics.endSession = (sessionId, callback) => {
             type: 'Hourly',
             amount: UserPayment.calculateAmount(userSession.startTime,
                                                 userSession.endTime),
-            paid: 0
+            paid: 0,
+            notes: ''
           }, (err, userSession) => {
             if (err) {
               console.error(err);

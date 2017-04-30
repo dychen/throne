@@ -23,10 +23,15 @@ const userPaymentSchema = new mongoose.Schema({
     type: String
   },
   amount: {
-    type: Number
+    type: Number,
+    default: 0
   },
   paid: {
-    type: Number
+    type: Number,
+    default: 0
+  },
+  notes: {
+    type: String
   },
   createdAt: {
     type: Date,
@@ -46,7 +51,7 @@ userPaymentSchema.statics.calculateAmount = (startTime, endTime) => {
 };
 
 userPaymentSchema.statics.getUserPaymentList = (callback) => {
-  UserPayment.find({}, '_user _session date type amount paid')
+  UserPayment.find({}, '_user _session date type amount paid notes')
     .populate('_user', 'photoUrl firstName lastName')
     .populate('_session', 'startTime endTime')
     .exec((err, userPayments) => {
@@ -68,7 +73,8 @@ userPaymentSchema.statics.getUserPaymentList = (callback) => {
           date: userPayment.date,
           type: userPayment.type,
           amount: userPayment.amount,
-          paid: userPayment.paid
+          paid: userPayment.paid,
+          notes: userPayment.notes
         }
       });
       return callback(null, flattenedUserPayments);
@@ -82,6 +88,7 @@ userPaymentSchema.statics.createUserPayment = (data, callback) => {
     type: data.type,
     amount: data.amount,
     paid: data.paid,
+    notes: data.notes,
     createdAt: new Date()
   }, (err, user) => {
     if (err) {
@@ -102,7 +109,8 @@ userPaymentSchema.statics.updateUserPayment = (data, paymentId, callback) => {
     date: data.date,
     type: data.type,
     amount: data.amount,
-    paid: data.paid
+    paid: data.paid,
+    notes: data.notes
   }, {
     upsert: true,
     new: true
