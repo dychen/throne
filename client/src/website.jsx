@@ -426,8 +426,21 @@ class WebsiteAbout extends React.Component {
       <WebsitePage backgroundClass="about">
         <div className="thrn-website-box">
           <div className="thrn-website-text-group">
+            <span className="text-group-bold">Overview</span>
+            <span>
+              Throne Poker is a private, social club that focuses on
+              &nbsp;providing a friendly and safe atmosphere for its members.
+              &nbsp;There will be no rake or tips taken off the tables.
+            </span>
+          </div>
+          <div className="thrn-website-text-group">
             <span className="text-group-bold">Members</span>
-            <span>New members must be referred by current members.</span>
+            <span>
+              Prospective members must sign up via
+              &nbsp;<a href="/register">thronepoker.com/register</a>
+            </span>
+            <span>No membership fee</span>
+            <span>Chair rental rate $10/hr</span>
           </div>
           <div className="thrn-website-text-group">
             <span className="text-group-bold">Address</span>
@@ -445,6 +458,7 @@ class WebsiteAbout extends React.Component {
           <div className="thrn-website-text-group">
             <span className="text-group-bold">Contact</span>
             <span>robert@thronepoker.com</span>
+            <span>512-334-9468</span>
             <span className="text-group-social">
               <a className="text-group-icon" target="_blank"
                  href="https://twitter.com/ThronePoker">

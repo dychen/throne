@@ -128,6 +128,7 @@ $ABOUT_IMAGE_URL: 'https://s3-us-west-1.amazonaws.com/throne-s3/images/about.jpg
   font-weight: 900;
   display: flex;
   align-items: center;
+  border-top: 1px solid $THRN_WHITE_ALPHA;
   > img {
     padding-left: 20px;
     padding-right: 20px;
@@ -207,6 +208,7 @@ $ABOUT_IMAGE_URL: 'https://s3-us-west-1.amazonaws.com/throne-s3/images/about.jpg
   max-width: 400px;
   min-height: 400px;
   max-height: 600px;
+  padding: 30px;
 
   display: flex;
   flex-direction: column;
