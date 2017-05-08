@@ -452,8 +452,7 @@ class WebsiteAbout extends React.Component {
           </div>
           <div className="thrn-website-text-group">
             <span className="text-group-bold">Hours</span>
-            <span>Monday-Friday: 6pm-4am</span>
-            <span>Saturday-Sunday: 2pm-4am</span>
+            <span>Wednesday-Saturday: 6pm-4am</span>
           </div>
           <div className="thrn-website-text-group">
             <span className="text-group-bold">Contact</span>
